@@ -16,7 +16,7 @@ export function PreCallPrepSection({
   onOpenPrepSheet: () => void
 }) {
   const hasPreCallNotes = Boolean(contact.preCallNotes?.trim())
-  const preview = hasPreCallNotes
+  const preview = contact.preCallNotes
     ? getFirstLinePreview(contact.preCallNotes)
     : null
 

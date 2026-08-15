@@ -40,7 +40,7 @@ function mapLoggedGmailMessageRow(row: LoggedGmailMessageRow): LoggedGmailMessag
   }
 }
 
-function throwSupabaseError(context: string, error: { message?: string } & Record<string, unknown>): never {
+function throwSupabaseError(context: string, error: { message?: string }): never {
   const message = error.message ?? "Unknown Supabase error"
   throw new Error(`${context}: ${message} ${JSON.stringify(error)}`)
 }
