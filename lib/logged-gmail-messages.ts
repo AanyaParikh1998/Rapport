@@ -113,8 +113,6 @@ export async function upsertLoggedGmailMessage(input: {
       .select("*")
       .single()
 
-    console.log("[logged-gmail-messages] update result:", { data, error })
-
     if (error) throwSupabaseError("[logged-gmail-messages] update failed", error)
     return mapLoggedGmailMessageRow(data as LoggedGmailMessageRow)
   }
@@ -124,8 +122,6 @@ export async function upsertLoggedGmailMessage(input: {
     .insert(insertPayload)
     .select("*")
     .single()
-
-  console.log("[logged-gmail-messages] insert result:", { data, error, insertPayload })
 
   if (error) {
     if (error.code === "23505") {
@@ -169,13 +165,6 @@ export async function confirmGmailMessageMatch(
   direction: GmailMessageDirection,
   subject?: string | null,
 ): Promise<LoggedGmailMessage> {
-  console.log("confirmGmailMessageMatch called:", {
-    messageId,
-    contactId,
-    direction,
-    subject,
-  })
-
   if (!messageId?.trim()) {
     throw new Error("confirmGmailMessageMatch: messageId is required")
   }

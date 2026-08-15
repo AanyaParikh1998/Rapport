@@ -634,32 +634,14 @@ export function matchCalendarEventsToContacts(
 
   for (const event of events) {
     if (shouldSkipCalendarEvent(event)) {
-      // console.log("[calendar-match] skipping event — excluded title keyword or too short", {
-      //   eventTitle: event.title,
-      //   durationMs: getCalendarEventDurationMs(event),
-      // })
       continue
     }
 
     const timing = getCalendarEventTiming(event, nowMs)
 
     if (timing === "in_progress") {
-      // console.log("[calendar-match] skipping event — currently in progress", {
-      //   eventTitle: event.title,
-      //   start: event.start,
-      //   end: event.end,
-      // })
       continue
     }
-
-    // console.log("[calendar-match] checking event", {
-    //   title: event.title,
-    //   description: event.description,
-    //   attendeeEmails: event.attendeeEmails,
-    //   timing,
-    //   start: event.start,
-    //   end: event.end,
-    // })
 
     let bestMatch: {
       contact: Contact
@@ -671,20 +653,7 @@ export function matchCalendarEventsToContacts(
         continue
       }
 
-      // console.log("[calendar-match] scoring contact", {
-      //   contactName: contact.name,
-      //   contactId: contact.id,
-      //   company: contact.company,
-      //   linkedinUrl: contact.linkedinUrl ?? null,
-      // })
-
       const score = scoreContactEventMatch(contact, event, context)
-
-      // console.log("[calendar-match] score result", {
-      //   contactName: contact.name,
-      //   eventTitle: event.title,
-      //   score,
-      // })
 
       if (!score) continue
 
@@ -694,9 +663,6 @@ export function matchCalendarEventsToContacts(
     }
 
     if (!bestMatch) {
-      // console.log("[calendar-match] no contact matched event above confidence threshold", {
-      //   eventTitle: event.title,
-      // })
       continue
     }
 
@@ -705,14 +671,6 @@ export function matchCalendarEventsToContacts(
         ? Math.floor((getEventInstantMs(event.start) - nowMs) / (1000 * 60 * 60))
         : Math.floor((nowMs - getEventInstantMs(event.end)) / (1000 * 60 * 60))
     const action = getCalendarMatchAction(bestMatch.contact, timing)
-
-    // console.log("[calendar-match] match accepted", {
-    //   contactName: bestMatch.contact.name,
-    //   eventTitle: event.title,
-    //   confidence: bestMatch.score.confidence,
-    //   signal: bestMatch.score.signal,
-    //   signals: bestMatch.score.signals,
-    // })
 
     matches.push({
       event,

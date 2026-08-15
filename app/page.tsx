@@ -168,12 +168,9 @@ function PipelinePageContent() {
   }, [])
 
   useEffect(() => {
-    console.log("[pipeline] calendar and Gmail fetch triggered on mount")
-
     let cancelled = false
 
     async function loadIntegrationData() {
-      console.log("[gmail] fetch starting")
       try {
         const [calendarResponse, gmailResponse] = await Promise.all([
           fetch("/api/calendar/events"),
@@ -186,17 +183,6 @@ function PipelinePageContent() {
         ])
 
         const messages = Array.isArray(gmailData.messages) ? gmailData.messages : []
-        console.log("[gmail] fetch complete, messages:", messages.length)
-
-        console.log("[pipeline] integration fetch responses", {
-          calendarOk: calendarResponse.ok,
-          calendarConnected: calendarData.connected,
-          calendarEventCount: Array.isArray(calendarData.events) ? calendarData.events.length : 0,
-          gmailOk: gmailResponse.ok,
-          gmailConnected: gmailData.connected,
-          gmailAuthorized: gmailData.gmailAuthorized,
-          gmailMessageCount: Array.isArray(gmailData.messages) ? gmailData.messages.length : 0,
-        })
 
         if (cancelled) return
 
@@ -274,10 +260,6 @@ function PipelinePageContent() {
       try {
         const keys = await fetchDismissedCalendarEventKeys()
         if (!cancelled) {
-          console.log("[pipeline] loaded dismissed calendar keys", {
-            count: keys.size,
-            keys: [...keys],
-          })
           setDismissedCalendarKeys(keys)
         }
       } catch (error) {
@@ -380,38 +362,6 @@ function PipelinePageContent() {
   }, [visibleCalendarMatches, gmailMatches, pastCallFollowUp])
 
   useEffect(() => {
-    console.log("[pipeline] gmailMatches state updated", {
-      gmailConnected,
-      gmailAuthorized,
-      gmailMessageCount: gmailMessages.length,
-      contactCount: contacts.length,
-      matchCount: gmailMatches.length,
-      matches: gmailMatches.map((match) => ({
-        contact: match.contact.name,
-        subject: match.message.subject,
-        action: match.action,
-      })),
-    })
-  }, [gmailMatches, gmailConnected, gmailAuthorized, gmailMessages.length, contacts.length])
-
-  useEffect(() => {
-    console.log("[pipeline] calendarMatches state updated", {
-      calendarConnected,
-      calendarEventCount: calendarEvents.length,
-      contactCount: contacts.length,
-      matchCount: calendarMatches.length,
-      matches: calendarMatches.map((match) => ({
-        contact: match.contact.name,
-        event: match.event.title,
-        timing: match.timing,
-        action: match.action,
-        confidence: match.confidence,
-        signal: match.signal,
-      })),
-    })
-  }, [calendarMatches, calendarConnected, calendarEvents.length, contacts.length])
-
-  useEffect(() => {
     const contactId = searchParams.get("contact")
     if (!contactId || contacts.length === 0) return
 
@@ -508,21 +458,9 @@ function PipelinePageContent() {
   function persistCalendarDismissal(match: CalendarEventMatch) {
     const key = getCalendarMatchKey(match)
 
-    console.log("[pipeline] persistCalendarDismissal", {
-      key,
-      contactId: match.contact.id,
-      contactName: match.contact.name,
-      eventId: match.event.id,
-      eventTitle: match.event.title,
-      timing: match.timing,
-    })
-
     setDismissedCalendarKeys((current) => new Set(current).add(key))
 
     void dismissCalendarEventMatch(match.contact.id, match.event.id)
-      .then((row) => {
-        console.log("[pipeline] calendar dismissal persisted", row)
-      })
       .catch((error) => {
         console.error("[pipeline] failed to persist calendar dismissal", {
           contactId: match.contact.id,
@@ -596,15 +534,6 @@ function PipelinePageContent() {
     const messageId = match.message?.messageId?.trim() ?? ""
     const contactId = match.contact?.id?.trim() ?? ""
 
-    console.log("[pipeline] confirm gmail match start", {
-      contactId,
-      contactName: contact.name,
-      messageId,
-      action,
-      messageDirection: match.message?.direction,
-      messageSubject: match.message?.subject,
-    })
-
     if (!action) {
       console.warn("[pipeline] confirm gmail match skipped — no action for current stage", {
         contactId,
@@ -653,10 +582,6 @@ function PipelinePageContent() {
 
     try {
       if (shouldMoveStage && targetStage) {
-        console.log("[pipeline] confirm gmail match: moveContactStage", {
-          contactId,
-          targetStage,
-        })
         const updated = await moveContactStage(contactId, targetStage)
         setContacts((current) =>
           current.map((item) => (item.id === contact.id ? updated : item)),
@@ -686,17 +611,6 @@ function PipelinePageContent() {
         const shouldSkipInteractionLog =
           alreadyConfirmed || hasBareEmailSentDuplicate || hasExactNoteDuplicate
 
-        console.log("[pipeline] confirm gmail match: logManualInteraction", {
-          contactId,
-          note,
-          stage: interactionStage,
-          gmailMessageId: messageId,
-          alreadyConfirmed,
-          hasBareEmailSentDuplicate,
-          hasExactNoteDuplicate,
-          shouldSkipInteractionLog,
-        })
-
         if (!shouldSkipInteractionLog) {
           await logManualInteraction({
             contactId,
@@ -704,7 +618,6 @@ function PipelinePageContent() {
             stage: interactionStage,
             gmailMessageId: messageId,
           })
-          console.log("[pipeline] confirm gmail match: fetchContactById", { contactId })
           const refreshed = await fetchContactById(contactId)
           if (refreshed) {
             setContacts((current) =>
@@ -714,11 +627,6 @@ function PipelinePageContent() {
         }
       }
 
-      console.log("[pipeline] confirm gmail match: confirmGmailMessageMatch", {
-        messageId,
-        contactId,
-        direction: match.message.direction,
-      })
       await confirmGmailMessageMatch(
         messageId,
         contactId,
@@ -925,9 +833,6 @@ function PipelinePageContent() {
       setConfirmingCalendarKey(null)
     }
   }
-
-  console.log("[pipeline] render with calendarMatches.length =", calendarMatches.length)
-  console.log("[pipeline] render with gmailMatches.length =", gmailMatches.length)
 
   return (
     <div className="flex h-screen overflow-hidden bg-background text-foreground">

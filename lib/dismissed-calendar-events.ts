@@ -38,11 +38,6 @@ export async function fetchDismissedCalendarEvents(): Promise<DismissedCalendarE
     throw error
   }
 
-  console.log("[dismissed-calendar-events] fetched dismissals", {
-    count: data?.length ?? 0,
-    rows: data,
-  })
-
   return (data as DismissedCalendarEventRow[]).map(mapDismissedCalendarEventRow)
 }
 
@@ -52,8 +47,6 @@ export async function fetchDismissedCalendarEventKeys(): Promise<Set<string>> {
     getCalendarDismissalKey(dismissal.contactId, dismissal.eventId),
   )
 
-  console.log("[dismissed-calendar-events] dismissal keys", keys)
-
   return new Set(keys)
 }
 
@@ -61,11 +54,6 @@ export async function dismissCalendarEventMatch(
   contactId: string,
   eventId: string,
 ): Promise<DismissedCalendarEvent> {
-  console.log("[dismissed-calendar-events] inserting dismissal", {
-    contactId,
-    eventId,
-  })
-
   const { data, error } = await supabase
     .from("dismissed_calendar_events")
     .insert({
@@ -77,11 +65,6 @@ export async function dismissCalendarEventMatch(
 
   if (error) {
     if (error.code === "23505") {
-      console.log("[dismissed-calendar-events] dismissal already exists", {
-        contactId,
-        eventId,
-      })
-
       const { data: existing, error: existingError } = await supabase
         .from("dismissed_calendar_events")
         .select("*")
@@ -104,8 +87,6 @@ export async function dismissCalendarEventMatch(
     })
     throw error
   }
-
-  console.log("[dismissed-calendar-events] insert succeeded", data)
 
   return mapDismissedCalendarEventRow(data as DismissedCalendarEventRow)
 }

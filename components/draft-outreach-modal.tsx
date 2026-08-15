@@ -252,8 +252,6 @@ export function DraftOutreachModal({
           : {}),
       }
 
-      console.log("[draft-outreach-modal] request body", requestBody)
-
       const response = await fetch("/api/draft-outreach", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -360,12 +358,7 @@ export function DraftOutreachModal({
 
       if (shouldLogFollowUpDrafted) {
         try {
-          const interaction = await logFollowUpDraftedInteraction(contact.id)
-          console.log("[draft-outreach-modal] Follow-up drafted interaction logged", {
-            contactId: contact.id,
-            contactStage: contact.stage,
-            interactionId: interaction.id,
-          })
+          await logFollowUpDraftedInteraction(contact.id)
         } catch (logError) {
           console.error("[draft-outreach-modal] Failed to log Follow-up drafted interaction", {
             contactId: contact.id,

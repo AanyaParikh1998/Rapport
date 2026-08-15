@@ -133,8 +133,6 @@ export async function POST(request: Request) {
     )
   }
 
-  console.log("prep-call request body:", JSON.stringify(body))
-
   const contact = body.contact
   if (!contact || typeof contact !== "object") {
     return NextResponse.json(
@@ -158,13 +156,6 @@ export async function POST(request: Request) {
 
   const interactions = Array.isArray(body.interactions) ? body.interactions : []
   const preCallNotes = body.preCallNotes?.trim() ?? ""
-
-  console.log("[prep-call] validated request", {
-    contactId: contact.id ?? null,
-    contactName: contact.name,
-    interactionCount: interactions.length,
-    preCallNotesLength: preCallNotes.length,
-  })
 
   let userProfile
   try {
@@ -267,11 +258,6 @@ Return ONLY valid JSON with this shape:
     if (!prep.opening && prep.talking_points.length === 0) {
       return NextResponse.json({ error: "Generated prep was empty" }, { status: 500 })
     }
-
-    console.log("[prep-call] generated prep successfully", {
-      contactId: contact.id ?? null,
-      talkingPointCount: prep.talking_points.length,
-    })
 
     return NextResponse.json(prep)
   } catch (error) {

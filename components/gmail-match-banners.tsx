@@ -26,13 +26,6 @@ export function GmailMatchBanners({
 }) {
   const visibleMatches = matches.filter((match) => !dismissedKeys.has(getGmailMatchKey(match)))
 
-  console.log("[gmail-banners] render", {
-    matchesLength: matches.length,
-    visibleMatchesLength: visibleMatches.length,
-    dismissedCount: dismissedKeys.size,
-    willRender: visibleMatches.length > 0,
-  })
-
   if (visibleMatches.length === 0) {
     return null
   }

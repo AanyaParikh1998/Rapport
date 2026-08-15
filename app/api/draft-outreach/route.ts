@@ -518,16 +518,6 @@ export async function POST(request: Request) {
     )
   }
 
-  console.log("[draft-outreach] context debug", {
-    contactId: contact.id,
-    contactStage,
-    followUpMode,
-    isAdvancedStage,
-    interactionSummaryFound: Boolean(interactionSummaryRow),
-    interactionSummaryRow,
-    interactionContextIncluded: interactionContextSection.length > 0,
-  })
-
   const userPrompt = buildUserPrompt(
     contact,
     sharedConnections,
@@ -544,11 +534,6 @@ export async function POST(request: Request) {
     profileId && profileRow?.style_instructions ? profileRow.style_instructions : null
 
   const systemPrompt = buildSystemPrompt(styleInstructions, format, userProfile)
-
-  console.log("[draft-outreach] full prompt to Claude", {
-    system: systemPrompt,
-    user: userPrompt,
-  })
 
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",

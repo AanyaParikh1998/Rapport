@@ -27,13 +27,6 @@ export function CalendarMatchBanners({
 }) {
   const visibleMatches = matches.filter((match) => !dismissedKeys.has(getCalendarMatchKey(match)))
 
-  console.log("[calendar-banners] render", {
-    matchesLength: matches.length,
-    visibleMatchesLength: visibleMatches.length,
-    dismissedCount: dismissedKeys.size,
-    willRender: visibleMatches.length > 0,
-  })
-
   if (visibleMatches.length === 0) {
     return null
   }
@@ -78,13 +71,6 @@ export function CalendarMatchBanners({
                 <button
                   type="button"
                   onClick={() => {
-                    console.log("[calendar-banners] dismiss clicked", {
-                      contactId: match.contact.id,
-                      contactName: match.contact.name,
-                      eventId: match.event.id,
-                      eventTitle: match.event.title,
-                      timing: match.timing,
-                    })
                     onDismiss(match)
                   }}
                   aria-label="Dismiss calendar suggestion"

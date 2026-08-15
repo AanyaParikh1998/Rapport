@@ -381,13 +381,11 @@ function isManualInteractionType(type: InteractionType): boolean {
 }
 
 async function touchContactLastActionAt(contactId: string): Promise<void> {
-  console.log("updating last_action_at for:", contactId)
   const { error } = await supabase
     .from("contacts")
     .update({ last_action_at: new Date().toISOString() })
     .eq("id", contactId)
     .select()
-  console.log("last_action_at update error:", error)
 
   if (error) {
     console.error("Failed to update contact last_action_at:", error.message, error)

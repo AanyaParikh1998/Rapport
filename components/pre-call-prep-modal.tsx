@@ -290,10 +290,6 @@ export function PreCallPrepModal({
 
     void (async () => {
       try {
-        console.log("[PreCallPrepModal] opening — fetching pre_call_notes from Supabase", {
-          contactId: contactSnapshot.id,
-        })
-
         const prepData = await fetchPreCallPrepData(contactSnapshot.id)
         if (cancelled) return
 
@@ -335,9 +331,6 @@ export function PreCallPrepModal({
     if (saveInFlightRef.current) return
 
     const goalsValue = preCallNotes.trim()
-    console.log("🔴 SAVE NOTES CLICKED")
-    console.log("🔴 goalsValue:", goalsValue)
-    console.log("🔴 contact.id:", contact.id)
 
     if (!isValidContactId(contact.id)) {
       console.error("Save error: contact.id is missing or not a valid UUID", {
@@ -358,9 +351,6 @@ export function PreCallPrepModal({
         .update({ pre_call_notes: goalsValue })
         .eq("id", contact.id)
         .select()
-
-      console.log("🔴 SUPABASE RESULT error:", error)
-      console.log("🔴 SUPABASE RESULT data:", data)
 
       if (error) throw error
 
@@ -385,7 +375,6 @@ export function PreCallPrepModal({
     if (relatedTarget?.dataset.preCallNoAutosave !== undefined) return
 
     const goalsValue = preCallNotes.trim()
-    console.log("auto-save triggered:", goalsValue)
     void handleSavePreCallNotes()
   }
 
@@ -423,8 +412,6 @@ export function PreCallPrepModal({
         preCallNotes,
       }
 
-      console.log("[PreCallPrepModal] prep-call request body:", JSON.stringify(requestBody))
-
       const response = await fetch("/api/prep-call", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -432,7 +419,6 @@ export function PreCallPrepModal({
       })
 
       const data = await response.json()
-      console.log("[PreCallPrepModal] prep-call response:", response.status, JSON.stringify(data))
 
       if (!response.ok) {
         throw new Error(typeof data.error === "string" ? data.error : "Failed to generate talking points")
@@ -462,7 +448,6 @@ export function PreCallPrepModal({
           ...contact,
           preCallTalkingPoints: prepResultToSave,
         })
-        console.log("[PreCallPrepModal] saved talking points:", savedRows)
       }
     } catch (error) {
       setPrepError(

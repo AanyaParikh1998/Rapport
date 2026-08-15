@@ -539,9 +539,6 @@ export async function fetchPreCallNotes(contactId: string): Promise<string> {
 export async function updatePreCallNotes(id: string, preCallNotes: string): Promise<Contact> {
   const goalsValue = preCallNotes.trim() || null
 
-  console.log("contact id:", id)
-  console.log("Saving pre_call_notes:", goalsValue)
-
   const { data, error } = await supabase
     .from("contacts")
     .update({ pre_call_notes: goalsValue })
@@ -550,7 +547,6 @@ export async function updatePreCallNotes(id: string, preCallNotes: string): Prom
     .maybeSingle()
 
   if (error) console.error("Save error:", error)
-  if (data) console.log("Save success:", data)
 
   if (error) throw error
   if (!data) {
