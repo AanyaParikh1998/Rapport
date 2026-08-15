@@ -11,7 +11,7 @@ import {
   getDraftSignOff,
   getSenderDisplayName,
   getSenderFirstName,
-} from "@/lib/user-profile-prompt"
+} from "@/lib/user-profile-format"
 
 export type IntroDraftFormat = "email" | "linkedin_message"
 

@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server"
 import { anthropicErrorResponse } from "@/lib/anthropic-api"
-import {
-  fetchUserProfileServer,
-  formatSenderForSystemPrompt,
-} from "@/lib/user-profile-prompt"
+import { fetchUserProfileServer } from "@/lib/user-profile-prompt"
+import { formatSenderForSystemPrompt } from "@/lib/user-profile-format"
 import { parseBulletItems } from "@/lib/interactions"
 
 type PrepCallInteraction = {

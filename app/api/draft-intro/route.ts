@@ -11,11 +11,8 @@ import {
 } from "@/lib/draft-intro-context"
 import type { Contact } from "@/lib/data"
 import { supabaseServer } from "@/lib/supabase/server"
-import {
-  fetchUserProfileServer,
-  formatSenderForSystemPrompt,
-  getDraftSignOff,
-} from "@/lib/user-profile-prompt"
+import { fetchUserProfileServer } from "@/lib/user-profile-prompt"
+import { formatSenderForSystemPrompt, getDraftSignOff } from "@/lib/user-profile-format"
 import type { UserProfile } from "@/lib/user-profile"
 
 type VoiceSampleRow = {

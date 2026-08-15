@@ -16,11 +16,11 @@ import {
   type PostCallSummary,
 } from "@/lib/post-call-context"
 import { supabaseServer } from "@/lib/supabase/server"
+import { fetchUserProfileServer } from "@/lib/user-profile-prompt"
 import {
-  fetchUserProfileServer,
   formatSenderForSystemPrompt,
   formatVerifiedUniversityOverlap,
-} from "@/lib/user-profile-prompt"
+} from "@/lib/user-profile-format"
 import type { UserProfile } from "@/lib/user-profile"
 
 type VoiceSampleRow = {
