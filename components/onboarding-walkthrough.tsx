@@ -1,0 +1,335 @@
+"use client"
+
+import { useCallback, useEffect, useRef, useState } from "react"
+import { createPortal } from "react-dom"
+import { IconArrowsMaximize, IconArrowsMinimize } from "@tabler/icons-react"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+import { WALKTHROUGH_SCENES } from "@/components/onboarding/scenes"
+import "./onboarding/onboarding.css"
+
+export const RAPPORT_ONBOARDING_SEEN_KEY = "rapport_onboarding_seen"
+
+function getSceneCaption(
+  scene: (typeof WALKTHROUGH_SCENES)[number],
+  elapsedMs: number,
+): string {
+  if (!scene.captionPhases?.length) return scene.caption
+  let caption = scene.caption
+  for (const phase of scene.captionPhases) {
+    if (elapsedMs >= phase.atMs) caption = phase.text
+  }
+  return caption
+}
+
+export function OnboardingWalkthrough({
+  open,
+  onClose,
+  onComplete,
+}: {
+  open: boolean
+  onClose: () => void
+  onComplete?: () => void
+}) {
+  const [sceneIndex, setSceneIndex] = useState(0)
+  const [mounted, setMounted] = useState(false)
+  const [sceneComplete, setSceneComplete] = useState(false)
+  const [progressKey, setProgressKey] = useState(0)
+  const [elapsedMs, setElapsedMs] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const [fullscreen, setFullscreen] = useState(false)
+
+  const sceneStartRef = useRef(0)
+  const accumulatedPauseRef = useRef(0)
+  const pausedAtRef = useRef<number | null>(null)
+
+  const scene = WALKTHROUGH_SCENES[sceneIndex]
+  const isLast = sceneIndex === WALKTHROUGH_SCENES.length - 1
+  const isStatic = scene.static || scene.durationMs === 0
+  const Scene = scene.Component
+  const displayCaption = getSceneCaption(scene, elapsedMs)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!open) return
+    setSceneIndex(0)
+    setFullscreen(false)
+  }, [open])
+
+  useEffect(() => {
+    if (!open) return
+
+    setPaused(false)
+    setSceneComplete(isStatic)
+    setElapsedMs(0)
+    setProgressKey((k) => k + 1)
+    sceneStartRef.current = Date.now()
+    accumulatedPauseRef.current = 0
+    pausedAtRef.current = null
+  }, [open, sceneIndex, isStatic])
+
+  useEffect(() => {
+    if (!open || isStatic || sceneComplete || paused) return
+
+    const tick = window.setInterval(() => {
+      setElapsedMs(Date.now() - sceneStartRef.current - accumulatedPauseRef.current)
+    }, 40)
+
+    return () => window.clearInterval(tick)
+  }, [open, sceneIndex, isStatic, sceneComplete, paused])
+
+  useEffect(() => {
+    if (!open || isStatic || sceneComplete || paused) return
+
+    const elapsed = Date.now() - sceneStartRef.current - accumulatedPauseRef.current
+    const remaining = Math.max(0, scene.durationMs - elapsed)
+
+    const timer = window.setTimeout(() => {
+      setSceneComplete(true)
+      setElapsedMs(scene.durationMs)
+    }, remaining)
+
+    return () => window.clearTimeout(timer)
+  }, [open, sceneIndex, scene.durationMs, isStatic, sceneComplete, paused])
+
+  const finish = useCallback(() => {
+    onComplete?.()
+    onClose()
+  }, [onClose, onComplete])
+
+  const goBack = useCallback(() => {
+    if (sceneIndex <= 0) return
+    setSceneIndex((i) => i - 1)
+  }, [sceneIndex])
+
+  const goNext = useCallback(() => {
+    if (sceneIndex >= WALKTHROUGH_SCENES.length - 1) {
+      finish()
+      return
+    }
+
+    setPaused(false)
+    setSceneIndex((i) => i + 1)
+  }, [sceneIndex, finish])
+
+  const togglePause = useCallback(() => {
+    setPaused((wasPaused) => {
+      if (!wasPaused) {
+        pausedAtRef.current = Date.now()
+        return true
+      }
+      if (pausedAtRef.current !== null) {
+        accumulatedPauseRef.current += Date.now() - pausedAtRef.current
+        pausedAtRef.current = null
+      }
+      return false
+    })
+  }, [])
+
+  const toggleFullscreen = useCallback(() => {
+    setFullscreen((value) => !value)
+  }, [])
+
+  useEffect(() => {
+    if (!open) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        finish()
+        return
+      }
+      if (e.key === "ArrowLeft") {
+        e.preventDefault()
+        goBack()
+        return
+      }
+      if (e.key === "ArrowRight") {
+        e.preventDefault()
+        goNext()
+        return
+      }
+      if (e.key === " " || e.code === "Space") {
+        const target = e.target as HTMLElement
+        if (target.closest("button")) return
+        e.preventDefault()
+        togglePause()
+      }
+    }
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  }, [open, finish, goBack, goNext, togglePause])
+
+  if (!mounted || !open) return null
+
+  const progressRunning = !isStatic && !sceneComplete
+  const progressDone = isStatic || sceneComplete
+  const canAdvance = sceneComplete || paused
+
+  return createPortal(
+    <div
+      className={cn(
+        "fixed inset-0 z-[100] flex bg-black/60",
+        fullscreen ? "items-stretch justify-stretch p-0" : "items-center justify-center",
+      )}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="onboarding-caption"
+      onClick={finish}
+    >
+      <div
+        className={cn(
+          "flex flex-col overflow-hidden bg-background shadow-2xl",
+          fullscreen ? "h-full w-full rounded-none" : "rounded-xl",
+        )}
+        style={
+          fullscreen
+            ? undefined
+            : { width: "85vw", height: "85vh", maxWidth: "100vw", maxHeight: "100vh" }
+        }
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex shrink-0 items-center gap-2 px-2 py-1.5">
+          <div className="relative h-1 min-w-0 flex-1 bg-muted">
+            <div
+              key={progressKey}
+              className={cn(
+                "ob-progress-bar-fill",
+                progressRunning && "is-running",
+                progressDone && "is-done",
+                progressRunning && paused && "is-paused",
+              )}
+              style={
+                progressRunning
+                  ? { animationDuration: `${scene.durationMs}ms` }
+                  : undefined
+              }
+            />
+          </div>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              toggleFullscreen()
+            }}
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-muted-foreground/60 transition-colors hover:bg-muted/80 hover:text-muted-foreground"
+            aria-label={fullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+          >
+            {fullscreen ? (
+              <IconArrowsMinimize className="h-3.5 w-3.5" stroke={1.75} />
+            ) : (
+              <IconArrowsMaximize className="h-3.5 w-3.5" stroke={1.75} />
+            )}
+          </button>
+        </div>
+
+        <div key={sceneIndex} className="flex min-h-0 flex-1 flex-col px-8 pt-6">
+          <div
+            className={cn(
+              "relative flex min-h-0 flex-1 cursor-pointer items-center justify-center overflow-hidden",
+              paused && "ob-is-paused",
+            )}
+            onClick={togglePause}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault()
+                togglePause()
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label={paused ? "Resume scene" : "Pause scene"}
+          >
+            <div className="h-full w-full max-h-full">
+              <Scene />
+            </div>
+            <div className={cn("ob-pause-overlay", paused && "is-visible")} aria-hidden={!paused}>
+              <div className="ob-pause-icon">
+                <span className="ob-pause-icon-bar" />
+                <span className="ob-pause-icon-bar" />
+              </div>
+            </div>
+          </div>
+          {displayCaption ? (
+            <p
+              id="onboarding-caption"
+              className="shrink-0 py-4 text-center text-[15px] leading-relaxed text-muted-foreground transition-opacity duration-300"
+            >
+              {displayCaption}
+            </p>
+          ) : (
+            <div className="shrink-0 py-4" aria-hidden />
+          )}
+        </div>
+
+        {sceneIndex === 0 ? (
+          <p className="shrink-0 px-8 pb-2 text-center text-[12px] text-muted-foreground/70">
+            ← → to navigate · Click or Space to pause
+          </p>
+        ) : null}
+
+        <div className="flex shrink-0 items-center justify-end gap-2 border-t border-border px-8 py-4">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={sceneIndex === 0}
+            onClick={(e) => {
+              e.stopPropagation()
+              goBack()
+            }}
+          >
+            Back
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation()
+              goNext()
+            }}
+            className="bg-primary text-primary-foreground hover:bg-primary/90"
+          >
+            {isLast ? "Get started" : canAdvance ? "Next" : "Skip scene"}
+          </Button>
+        </div>
+
+        <div className="flex shrink-0 items-center justify-between border-t border-border px-8 py-3">
+          <span className="text-[13px] font-medium text-muted-foreground">
+            {scene.actLabel ?? "Welcome"}
+          </span>
+
+          <div className="flex items-center gap-1.5">
+            {WALKTHROUGH_SCENES.map((s, i) => (
+              <span
+                key={s.id}
+                className={cn(
+                  "h-1.5 rounded-full transition-all duration-300",
+                  i === sceneIndex
+                    ? "w-4 bg-primary"
+                    : i < sceneIndex
+                      ? "w-1.5 bg-primary/40"
+                      : "w-1.5 bg-muted-foreground/25",
+                )}
+                aria-hidden
+              />
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              finish()
+            }}
+            className="text-[13px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+          >
+            Skip walkthrough
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  )
+}
