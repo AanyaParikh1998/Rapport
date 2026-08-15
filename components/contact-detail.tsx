@@ -13,6 +13,7 @@ import {
   ExternalLink,
   Building2,
   GraduationCap,
+  Download,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { Contact } from "@/lib/data"
@@ -60,6 +61,7 @@ import {
 } from "@/lib/contacts"
 import { notifyContactsChanged } from "@/lib/contacts-events"
 import { getTrackCalendarSuggestion } from "@/lib/track-calendar"
+import { downloadVCard } from "@/lib/vcard"
 
 type DetailTab = "profile" | "outreach" | "notes_drafts"
 
@@ -401,6 +403,15 @@ export function ContactDetail({
             {city ? (
               <p className="mt-1 text-[12px] text-muted-foreground">{city}</p>
             ) : null}
+
+            <button
+              type="button"
+              onClick={() => downloadVCard(contact)}
+              className="mt-3 flex items-center justify-center gap-1.5 rounded-md border border-input bg-background px-2.5 py-1.5 text-[11px] font-medium text-foreground transition-colors hover:bg-muted/60"
+            >
+              <Download className="h-3.5 w-3.5" />
+              Export vCard
+            </button>
           </div>
         </div>
 
