@@ -2,9 +2,7 @@
 
 import { Check } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { OB_RAW_LINKEDIN_SARAH, OB_USER } from "@/components/onboarding/persona"
-
-export { Scene3PreferencesVoicePanel, S3_DURATION_MS } from "@/components/onboarding/scene3-voice-panel"
+import { OB_RAW_LINKEDIN_USER, OB_USER } from "@/components/onboarding/persona"
 
 export const OB_PREF_INPUT_CLASS =
   "w-full rounded-md border border-input bg-background px-3 py-2 text-[13px] text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
@@ -81,26 +79,26 @@ function Scene2FieldAutofill({
 const SCENE2_FIELD_ROWS = [
   [
     { label: "Full name", value: OB_USER.name, fieldClass: "ob-s2-field-1" },
+    { label: "Role or program", value: OB_USER.role, fieldClass: "ob-s2-field-2" },
+  ],
+  [
+    { label: "Location", value: OB_USER.location, fieldClass: "ob-s2-field-3" },
     {
-      label: "Current company or school",
-      value: OB_USER.company,
-      fieldClass: "ob-s2-field-2",
+      label: "Undergraduate university",
+      value: OB_USER.undergrad,
+      fieldClass: "ob-s2-field-4",
     },
   ],
   [
-    { label: "Role or program", value: OB_USER.role, fieldClass: "ob-s2-field-3" },
+    {
+      label: "Current company or school",
+      value: OB_USER.company,
+      fieldClass: "ob-s2-field-5",
+    },
     {
       label: "Graduate university",
       value: OB_USER.grad,
       fieldClass: "ob-s2-field-6",
-    },
-  ],
-  [
-    { label: "Location", value: OB_USER.location, fieldClass: "ob-s2-field-4" },
-    {
-      label: "Undergraduate university",
-      value: OB_USER.undergrad,
-      fieldClass: "ob-s2-field-5",
     },
   ],
 ] as const
@@ -117,7 +115,7 @@ export function Scene2PreferencesProfilePanel() {
             <div className="relative min-w-0 flex-1">
               <div className="ob-s2-paste-area ob-pflow-paste-scroll-hint relative h-[50px] max-h-[50px] overflow-hidden rounded-md border border-input bg-background px-2 py-1 text-[10px] leading-tight text-muted-foreground">
                 <p className="ob-s2-paste-blob ob-pflow-paste-blob whitespace-pre-wrap opacity-0">
-                  {OB_RAW_LINKEDIN_SARAH}
+                  {OB_RAW_LINKEDIN_USER}
                 </p>
                 <span className="ob-s2-kbd-v ob-kbd ob-pflow-kbd-v absolute bottom-1 right-1 opacity-0">
                   ⌘V

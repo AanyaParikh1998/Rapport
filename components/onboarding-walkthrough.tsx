@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { IconArrowsMaximize, IconArrowsMinimize } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
@@ -39,9 +39,15 @@ export function OnboardingWalkthrough({
   const [paused, setPaused] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
 
+  const [scrubPreviewFraction, setScrubPreviewFraction] = useState<number | null>(null)
+
   const sceneStartRef = useRef(0)
   const accumulatedPauseRef = useRef(0)
   const pausedAtRef = useRef<number | null>(null)
+  const sceneContainerRef = useRef<HTMLDivElement>(null)
+  const progressBarRef = useRef<HTMLDivElement>(null)
+  const progressTrackRef = useRef<HTMLDivElement>(null)
+  const isScrubbingRef = useRef(false)
 
   const scene = WALKTHROUGH_SCENES[sceneIndex]
   const isLast = sceneIndex === WALKTHROUGH_SCENES.length - 1
@@ -133,6 +139,83 @@ export function OnboardingWalkthrough({
     setFullscreen((value) => !value)
   }, [])
 
+  const seekToMs = useCallback(
+    (targetMs: number) => {
+      const clampedMs = Math.max(0, Math.min(targetMs, scene.durationMs))
+
+      const container = sceneContainerRef.current
+      if (container) {
+        for (const animation of container.getAnimations({ subtree: true })) {
+          animation.currentTime = clampedMs
+        }
+      }
+
+      sceneStartRef.current = Date.now() - clampedMs
+      accumulatedPauseRef.current = 0
+      pausedAtRef.current = null
+      setElapsedMs(clampedMs)
+      setSceneComplete(clampedMs >= scene.durationMs)
+      setPaused(false)
+    },
+    [scene.durationMs],
+  )
+
+  // The progress-bar fill's CSS animation is disabled (via the "is-running" class
+  // removal) while scrubbing, so it doesn't exist yet at the moment seekToMs runs —
+  // setting currentTime there is a no-op. Once the drag/click ends and React
+  // re-renders with the animation restored, sync its currentTime here instead.
+  useLayoutEffect(() => {
+    if (scrubPreviewFraction !== null) return
+    const progressBar = progressBarRef.current
+    if (!progressBar) return
+    for (const animation of progressBar.getAnimations()) {
+      animation.currentTime = elapsedMs
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scrubPreviewFraction])
+
+  const computeFractionFromClientX = useCallback((clientX: number) => {
+    const track = progressTrackRef.current
+    if (!track) return 0
+    const rect = track.getBoundingClientRect()
+    if (rect.width === 0) return 0
+    return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width))
+  }, [])
+
+  const handleScrubStart = useCallback(
+    (e: React.MouseEvent) => {
+      if (isStatic) return
+      e.stopPropagation()
+      isScrubbingRef.current = true
+      setScrubPreviewFraction(computeFractionFromClientX(e.clientX))
+    },
+    [isStatic, computeFractionFromClientX],
+  )
+
+  useEffect(() => {
+    if (!open) return
+
+    function handleMove(e: MouseEvent) {
+      if (!isScrubbingRef.current) return
+      setScrubPreviewFraction(computeFractionFromClientX(e.clientX))
+    }
+
+    function handleUp(e: MouseEvent) {
+      if (!isScrubbingRef.current) return
+      isScrubbingRef.current = false
+      const fraction = computeFractionFromClientX(e.clientX)
+      setScrubPreviewFraction(null)
+      seekToMs(fraction * scene.durationMs)
+    }
+
+    window.addEventListener("mousemove", handleMove)
+    window.addEventListener("mouseup", handleUp)
+    return () => {
+      window.removeEventListener("mousemove", handleMove)
+      window.removeEventListener("mouseup", handleUp)
+    }
+  }, [open, computeFractionFromClientX, seekToMs, scene.durationMs])
+
   useEffect(() => {
     if (!open) return
     const onKeyDown = (e: KeyboardEvent) => {
@@ -191,21 +274,46 @@ export function OnboardingWalkthrough({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex shrink-0 items-center gap-2 px-2 py-1.5">
-          <div className="relative h-1 min-w-0 flex-1 bg-muted">
+          <div
+            ref={progressTrackRef}
+            className={cn(
+              "relative h-1 min-w-0 flex-1 bg-muted",
+              !isStatic && "cursor-pointer",
+            )}
+            onMouseDown={handleScrubStart}
+            role={isStatic ? undefined : "slider"}
+            aria-label={isStatic ? undefined : "Scrub timeline"}
+            aria-valuenow={isStatic ? undefined : Math.round(elapsedMs)}
+            aria-valuemin={isStatic ? undefined : 0}
+            aria-valuemax={isStatic ? undefined : scene.durationMs}
+          >
             <div
               key={progressKey}
+              ref={progressBarRef}
               className={cn(
-                "ob-progress-bar-fill",
-                progressRunning && "is-running",
-                progressDone && "is-done",
-                progressRunning && paused && "is-paused",
+                "ob-progress-bar-fill relative",
+                scrubPreviewFraction === null && progressRunning && "is-running",
+                scrubPreviewFraction === null && progressDone && "is-done",
+                scrubPreviewFraction === null && progressRunning && paused && "is-paused",
               )}
               style={
-                progressRunning
-                  ? { animationDuration: `${scene.durationMs}ms` }
-                  : undefined
+                scrubPreviewFraction !== null
+                  ? { width: `${scrubPreviewFraction * 100}%`, animation: "none" }
+                  : progressRunning
+                    ? { animationDuration: `${scene.durationMs}ms` }
+                    : undefined
               }
-            />
+            >
+              {!isStatic ? (
+                <span
+                  className={cn(
+                    "absolute right-0 top-1/2 h-2.5 w-2.5 -translate-y-1/2 translate-x-1/2 rounded-full bg-primary shadow-sm ring-2 ring-background transition-transform",
+                    scrubPreviewFraction !== null && "scale-125",
+                  )}
+                  aria-hidden
+                />
+              ) : null}
+            </div>
           </div>
           <button
             type="button"
@@ -241,7 +349,7 @@ export function OnboardingWalkthrough({
             tabIndex={0}
             aria-label={paused ? "Resume scene" : "Pause scene"}
           >
-            <div className="h-full w-full max-h-full">
+            <div ref={sceneContainerRef} className="h-full w-full max-h-full">
               <Scene />
             </div>
             <div className={cn("ob-pause-overlay", paused && "is-visible")} aria-hidden={!paused}>

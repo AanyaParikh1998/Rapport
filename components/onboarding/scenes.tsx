@@ -14,17 +14,13 @@ import {
 import { DraftVoiceProfileDropdown } from "@/components/onboarding/draft-voice-dropdown"
 import { S7_DURATION_MS } from "@/components/onboarding/scene7-timeline"
 import { S11_DURATION_MS } from "@/components/onboarding/scene11-timeline"
-import {
-  Scene2PreferencesProfilePanel,
-  Scene3PreferencesVoicePanel,
-} from "@/components/onboarding/preferences-mocks"
+import { Scene2PreferencesProfilePanel } from "@/components/onboarding/preferences-mocks"
 import { WalkthroughCursor } from "@/components/onboarding/walkthrough-cursor"
 import { S5_DURATION_MS, S5_EMAIL_CHAR_MS, S5_EMAIL_TEXT, S5_EMAIL_TYPING_START } from "@/components/onboarding/scene5-timeline"
-import {
-  S3_CAPTION_FINAL_MS,
-  S3_CAPTION_MID_MS,
-  S3_DURATION_MS,
-} from "@/components/onboarding/scene3-timeline"
+import { SceneCreateProfilePanel } from "@/components/onboarding/scene-create-profile-panel"
+import { S3_DURATION_MS } from "@/components/onboarding/scene-create-profile-timeline"
+import { SceneMyVoicePanel } from "@/components/onboarding/scene-my-voice-panel"
+import { S4_DURATION_MS } from "@/components/onboarding/scene-my-voice-timeline"
 import {
   OB_CONTACTS,
   OB_DRAFT_BODY_LINES,
@@ -33,6 +29,7 @@ import {
   OB_USER,
   STAGE_BORDER,
 } from "@/components/onboarding/persona"
+import { S2_DURATION_MS } from "@/components/onboarding/scene2-timeline"
 
 export type WalkthroughSceneDef = {
   id: string
@@ -440,10 +437,10 @@ export function SceneProfileSetup() {
         name={OB_USER.name}
         headline={OB_USER.headline}
         url={OB_USER.linkedinUrl}
-        experience={["Wharton School · MBA Candidate", "Goldman Sachs · Tech M&A · 4 yrs"]}
+        experience={["Hollyport Capital · Private Equity Secondaries"]}
         education={[
-          "Wharton School of Business · MBA Candidate",
-          "UC Berkeley · BA Economics",
+          "The Wharton School · MBA Candidate, Class of 2028",
+          "Brown University · Class of 2021",
         ]}
         dimClass=""
         selectClass="ob-s2-select"
@@ -458,8 +455,12 @@ export function SceneProfileSetup() {
   )
 }
 
-export function SceneVoiceSetup() {
-  return <Scene3PreferencesVoicePanel />
+export function SceneCreateProfile() {
+  return <SceneCreateProfilePanel />
+}
+
+export function SceneMyVoice() {
+  return <SceneMyVoicePanel />
 }
 
 export function ScenePreferencesSummary() {
@@ -920,30 +921,28 @@ export const WALKTHROUGH_SCENES: WalkthroughSceneDef[] = [
     Component: SceneAct1Title,
   },
   {
-    id: "profile",
+    id: "contact-details",
     actLabel: "Act 1: Setting up Rapport",
     caption: "Paste your LinkedIn once. Rapport fills in everything automatically.",
     static: false,
-    durationMs: 12500,
+    durationMs: S2_DURATION_MS,
     Component: SceneProfileSetup,
   },
   {
-    id: "voice",
+    id: "create-profile",
     actLabel: "Act 1: Setting up Rapport",
-    caption: "",
-    captionPhases: [
-      {
-        atMs: S3_CAPTION_MID_MS,
-        text: "Create different profiles for different contexts.",
-      },
-      {
-        atMs: S3_CAPTION_FINAL_MS,
-        text: "You can also add LinkedIn message samples for even more personalized outreach.",
-      },
-    ],
+    caption: "Create different profiles for different contexts.",
     static: false,
     durationMs: S3_DURATION_MS,
-    Component: SceneVoiceSetup,
+    Component: SceneCreateProfile,
+  },
+  {
+    id: "my-voice",
+    actLabel: "Act 1: Setting up Rapport",
+    caption: "Add real examples of your writing so Rapport matches your voice.",
+    static: false,
+    durationMs: S4_DURATION_MS,
+    Component: SceneMyVoice,
   },
   {
     id: "prefs-summary",

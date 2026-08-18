@@ -898,7 +898,7 @@
   animation: ob-fade-in 0.5s ease-out 26.6s both, ob-s5-card-glow 1.25s ease-out 26.6s both;
 }
 
-/* Scene 3: Voice — focused sub-views (see scene3-timeline.ts) */
+/* Scene 3: Create your profile (see scene-create-profile-timeline.ts) */
 .ob-s3-typewriter {
   word-wrap: break-word;
   overflow-wrap: anywhere;
@@ -940,171 +940,11 @@
   }
 }
 
-@keyframes ob-s3-cursor-p {
-  0%,
-  2.7% {
-    opacity: 0;
-    right: 0;
-  }
-
-  2.9%,
-  6.7% {
-    opacity: 1;
-    right: 0;
-  }
-
-  6.9%,
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes ob-s3-cursor-p2 {
-  0%,
-  27.4% {
-    opacity: 0;
-    right: 0;
-  }
-
-  27.6%,
-  31.6% {
-    opacity: 1;
-    right: 0;
-  }
-
-  31.8%,
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes ob-s3-cursor-e {
-  0%,
-  56.67% {
-    opacity: 0;
-  }
-
-  57.1%,
-  59.4% {
-    opacity: 1;
-  }
-
-  59.6%,
-  100% {
-    opacity: 0;
-  }
-}
-
-.ob-s3-view-profiles {
-  animation: ob-s3-view-out 0.5s ease-in 25.87s forwards;
-}
-
-.ob-s3-view-emails {
-  animation: ob-fade-in 0.5s ease-out 25.87s forwards,
-    ob-s3-view-out 0.5s ease-in 44.56s forwards;
-}
-
-.ob-s3-view-summary {
-  animation: ob-fade-in 0.5s ease-out 44.56s forwards;
-}
-
-.ob-s3-step-voice {
-  animation: ob-fade-in 0.4s ease-out 0.5s forwards, ob-fade-out 0.4s ease-in 25.87s forwards;
-}
-
-.ob-s3-step-email {
-  animation: ob-fade-in 0.4s ease-out 25.87s forwards, ob-fade-out 0.4s ease-in 42.06s forwards;
-}
-
-.ob-s3-new-profile-btn {
-  animation: ob-s3-btn-hover 0.5s ease-in-out 1s forwards,
-    ob-pflow-btn-click 0.25s ease-out 1.5s 1, ob-s3-btn-hover 0.5s ease-in-out 14.34s forwards,
-    ob-pflow-btn-click 0.25s ease-out 14.84s 1;
-}
-
-.ob-s3-profiles-empty {
-  animation: ob-fade-out 0.35s ease-in 12.34s forwards;
-}
-
-.ob-s3-profiles-grid {
-  animation: ob-fade-in 0.4s ease-out 12.34s forwards;
-}
-
-.ob-s3-profile-card-1 {
-  opacity: 0;
-  animation: ob-s3-card-in 0.4s ease-out 12.34s forwards;
-}
-
-.ob-s3-profile-card-2 {
-  opacity: 0;
-  animation: ob-s3-card-in 0.4s ease-out 23.37s forwards;
-}
-
-.ob-s3-overlay-p1 {
-  animation: ob-fade-in 0.5s ease-out 1.5s forwards, ob-fade-out 0.35s ease-in 12.09s forwards;
-}
-
-.ob-s3-overlay-p2 {
-  animation: ob-fade-in 0.5s ease-out 14.84s forwards, ob-fade-out 0.35s ease-in 23.12s forwards;
-}
-
-.ob-s3-modal-p1 {
-  animation: ob-fade-in 0.35s ease-out 2s forwards, ob-fade-out 0.35s ease-in 12.09s forwards;
-}
-
-.ob-s3-modal-p2 {
-  animation: ob-fade-in 0.35s ease-out 15.34s forwards, ob-fade-out 0.35s ease-in 23.12s forwards;
-}
-
-.ob-s3-save-p1 {
-  animation: ob-s3-btn-hover 0.5s ease-in-out 11.19s forwards,
-    ob-pflow-btn-click 0.25s ease-out 12.09s 1;
-}
-
-.ob-s3-save-p2 {
-  animation: ob-s3-btn-hover 0.5s ease-in-out 22.22s forwards,
-    ob-pflow-btn-click 0.25s ease-out 23.12s 1;
-}
-
-.ob-s3-add-email-btn {
-  animation: ob-s3-btn-hover 0.5s ease-in-out 26.37s forwards,
-    ob-pflow-btn-click 0.25s ease-out 26.87s 1,
-    ob-fade-out 0.25s ease-in 27.15s forwards;
-}
-
-.ob-s3-email-profile-trigger {
-  animation: ob-s3-profile-trigger-focus 0.3s ease-out 36.51s forwards;
-}
-
 @keyframes ob-s3-profile-trigger-focus {
   to {
     border-color: #378add;
     box-shadow: 0 0 0 2px color-mix(in oklch, #378add 25%, transparent);
   }
-}
-
-.ob-s3-email-profile-placeholder {
-  animation: ob-fade-out 0.2s ease-in 38.71s forwards;
-}
-
-.ob-s3-email-profile-value {
-  animation: ob-fade-in 0.25s ease-out 38.71s forwards;
-}
-
-.ob-s3-modal-layer {
-  overflow: visible;
-}
-
-.ob-s3-modal-email {
-  overflow: visible;
-  animation: ob-fade-in 0.35s ease-out 27.37s forwards, ob-fade-out 0.35s ease-in 39.41s forwards;
-}
-
-.ob-s3-email-profile-menu {
-  visibility: hidden;
-  opacity: 0;
-  animation: ob-s3-profile-menu-open 0.2s ease-out 36.81s forwards,
-    ob-s3-profile-menu-close 0.2s ease-in 38.71s forwards;
 }
 
 @keyframes ob-s3-profile-menu-open {
@@ -1119,11 +959,6 @@
     opacity: 0;
     visibility: hidden;
   }
-}
-
-.ob-s3-email-profile-opt-1 {
-  background: #e6f1fb;
-  animation: ob-s3-profile-opt-select-flash 0.35s ease-out 38.31s 1;
 }
 
 @keyframes ob-s3-profile-opt-select-flash {
@@ -1142,60 +977,347 @@
   }
 }
 
-.ob-s3-cursor-dropdown {
-  animation: ob-fade-in 0.2s ease-out 36.51s forwards,
-    ob-walkthrough-cursor-arrive 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 36.51s 1,
-    ob-walkthrough-cursor-click 0.1s ease-out 38.31s 1,
-    ob-fade-out 0.2s ease-in 38.71s forwards;
+@keyframes ob-s3-cursor-p {
+  0%,
+  2.6% {
+    opacity: 0;
+    right: 0;
+  }
+
+  2.9%,
+  6.8% {
+    opacity: 1;
+    right: 0;
+  }
+
+  7.1%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes ob-s3-cursor-p2 {
+  0%,
+  49.4% {
+    opacity: 0;
+    right: 0;
+  }
+
+  49.8%,
+  53.5% {
+    opacity: 1;
+    right: 0;
+  }
+
+  53.8%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.ob-s3-modal-layer {
+  overflow: visible;
+}
+
+.ob-s3-new-profile-btn {
+  animation: ob-s3-btn-hover 0.5s ease-in-out 1s forwards,
+    ob-pflow-btn-click 0.25s ease-out 1.5s 1, ob-s3-btn-hover 0.5s ease-in-out 19.03s forwards,
+    ob-pflow-btn-click 0.25s ease-out 19.53s 1;
+}
+
+.ob-s3-profiles-empty {
+  animation: ob-fade-out 0.35s ease-in 17.03s forwards;
+}
+
+.ob-s3-profiles-grid {
+  animation: ob-fade-in 0.4s ease-out 17.03s forwards;
+}
+
+.ob-s3-profile-card-1 {
+  opacity: 0;
+  animation: ob-s3-card-in 0.4s ease-out 17.03s forwards;
+}
+
+.ob-s3-profile-card-2 {
+  opacity: 0;
+  animation: ob-s3-card-in 0.4s ease-out 35.97s forwards;
+}
+
+.ob-s3-overlay-p1 {
+  animation: ob-fade-in 0.5s ease-out 1.5s forwards, ob-fade-out 0.35s ease-in 16.78s forwards;
+}
+
+.ob-s3-overlay-p2 {
+  animation: ob-fade-in 0.5s ease-out 19.53s forwards, ob-fade-out 0.35s ease-in 35.72s forwards;
+}
+
+.ob-s3-modal-p1 {
+  animation: ob-fade-in 0.35s ease-out 2s forwards, ob-fade-out 0.35s ease-in 16.78s forwards;
+}
+
+.ob-s3-modal-p2 {
+  animation: ob-fade-in 0.35s ease-out 20.03s forwards, ob-fade-out 0.35s ease-in 35.72s forwards;
+}
+
+.ob-s3-save-p1 {
+  animation: ob-s3-btn-hover 0.5s ease-in-out 16.38s forwards,
+    ob-pflow-btn-click 0.25s ease-out 16.78s 1;
+}
+
+.ob-s3-save-p2 {
+  animation: ob-s3-btn-hover 0.5s ease-in-out 35.32s forwards,
+    ob-pflow-btn-click 0.25s ease-out 35.72s 1;
 }
 
 .ob-s3-cursor-p {
   opacity: 0;
-  animation: ob-s3-cursor-p 47.06s linear forwards,
+  animation: ob-s3-cursor-p 38.47s linear forwards,
     ob-walkthrough-cursor-arrive 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 1.5s 1,
-    ob-walkthrough-cursor-click 0.1s ease-out 1.5s 1,
-    ob-walkthrough-cursor-arrive 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 14.84s 1,
-    ob-walkthrough-cursor-click 0.1s ease-out 14.84s 1;
+    ob-walkthrough-cursor-click 0.1s ease-out 1.5s 1;
 }
 
 .ob-s3-cursor-p2 {
   opacity: 0;
-  animation: ob-s3-cursor-p2 47.06s linear forwards,
-    ob-walkthrough-cursor-arrive 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 14.84s 1,
-    ob-walkthrough-cursor-click 0.1s ease-out 14.84s 1;
+  animation: ob-s3-cursor-p2 38.47s linear forwards,
+    ob-walkthrough-cursor-arrive 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 19.53s 1,
+    ob-walkthrough-cursor-click 0.1s ease-out 19.53s 1;
 }
 
-.ob-s3-cursor-e {
+/* Scene 4: My Voice (see scene-my-voice-timeline.ts) */
+@keyframes ob-s4-cursor-email {
+  0%,
+  3.3% {
+    opacity: 0;
+  }
+
+  3.6%,
+  8.3% {
+    opacity: 1;
+  }
+
+  8.5%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes ob-s4-cursor-li {
+  0%,
+  49.9% {
+    opacity: 0;
+  }
+
+  50.2%,
+  54.8% {
+    opacity: 1;
+  }
+
+  55.1%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.ob-s4-view-email {
+  animation: ob-s3-view-out 0.5s ease-in 15.05s forwards;
+}
+
+.ob-s4-view-linkedin {
+  animation: ob-fade-in 0.5s ease-out 15.05s forwards;
+}
+
+.ob-s4-add-email-btn {
+  animation: ob-s3-btn-hover 0.5s ease-in-out 1s forwards,
+    ob-pflow-btn-click 0.25s ease-out 1.5s 1,
+    ob-fade-out 0.25s ease-in 1.78s forwards;
+}
+
+.ob-s4-emails-empty {
+  animation: ob-fade-out 0.35s ease-in 12.55s forwards;
+}
+
+.ob-s4-email-card-wrap {
+  animation: ob-fade-in 0.4s ease-out 12.55s forwards;
+}
+
+.ob-s4-email-card {
+  animation: ob-s3-card-in 0.4s ease-out 12.55s forwards;
+}
+
+.ob-s4-overlay-email {
+  animation: ob-fade-in 0.5s ease-out 1.5s forwards, ob-fade-out 0.35s ease-in 11.9s forwards;
+}
+
+.ob-s4-modal-email {
+  overflow: visible;
+  animation: ob-fade-in 0.35s ease-out 2s forwards, ob-fade-out 0.35s ease-in 11.9s forwards;
+}
+
+/* Email: copy from a mock sent message, then paste */
+.ob-s4-email-select {
   opacity: 0;
-  animation: ob-s3-cursor-e 47.06s linear forwards,
-    ob-walkthrough-cursor-arrive 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 26.87s 1,
-    ob-walkthrough-cursor-click 0.1s ease-out 26.87s 1;
+  animation: ob-fade-in 0.3s ease-out 4.9s both, ob-fade-out 0.25s ease-in 6.1s both;
 }
 
-.ob-s3-emails-empty {
-  animation: ob-fade-out 0.35s ease-in 40.06s forwards;
+.ob-s4-email-kbd-a {
+  animation: ob-fade-in 0.25s ease-out 4.9s both, ob-fade-out 0.2s ease-in 6.1s both;
 }
 
-.ob-s3-email-card-wrap {
-  animation: ob-fade-in 0.4s ease-out 40.06s forwards;
+.ob-s4-email-kbd-c {
+  animation: ob-fade-in 0.25s ease-out 6.1s both, ob-fade-out 0.2s ease-in 7.1s both;
 }
 
-.ob-s3-email-card {
-  animation: ob-s3-card-in 0.4s ease-out 40.06s forwards;
+.ob-s4-email-copied {
+  opacity: 0;
+  animation: ob-fade-in 0.25s ease-out 6.1s both, ob-fade-out 0.25s ease-in 7.1s both;
 }
 
-.ob-s3-overlay-email {
-  animation: ob-fade-in 0.5s ease-out 26.87s forwards, ob-fade-out 0.35s ease-in 39.41s forwards;
+.ob-s4-email-kbd-v {
+  animation: ob-fade-in 0.25s ease-out 7.3s both, ob-fade-out 0.2s ease-in 8.3s both;
 }
 
-.ob-s3-save-email {
-  animation: ob-s3-btn-hover 0.5s ease-in-out 38.91s forwards,
-    ob-pflow-btn-click 0.25s ease-out 39.41s 1;
+.ob-s4-email-paste {
+  animation: ob-pflow-paste-pop 0.15s ease-out 7.5s forwards;
 }
 
-.ob-s3-li-caption {
-  animation: ob-fade-in 0.4s ease-out 42.06s forwards,
-    ob-fade-out 0.4s ease-in 44.06s forwards;
+.ob-s4-email-profile-trigger {
+  animation: ob-s3-profile-trigger-focus 0.3s ease-out 9s forwards;
+}
+
+.ob-s4-email-profile-placeholder {
+  animation: ob-fade-out 0.2s ease-in 11.2s forwards;
+}
+
+.ob-s4-email-profile-value {
+  animation: ob-fade-in 0.25s ease-out 11.2s forwards;
+}
+
+.ob-s4-email-profile-menu {
+  visibility: hidden;
+  opacity: 0;
+  animation: ob-s3-profile-menu-open 0.2s ease-out 9.3s forwards,
+    ob-s3-profile-menu-close 0.2s ease-in 11.2s forwards;
+}
+
+.ob-s4-email-profile-opt-selected {
+  background: #e6f1fb;
+  animation: ob-s3-profile-opt-select-flash 0.35s ease-out 10.8s 1;
+}
+
+.ob-s4-email-profile-cursor {
+  animation: ob-fade-in 0.2s ease-out 9.3s forwards,
+    ob-walkthrough-cursor-arrive 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 9.3s 1,
+    ob-walkthrough-cursor-click 0.1s ease-out 10.8s 1,
+    ob-fade-out 0.2s ease-in 11.2s forwards;
+}
+
+.ob-s4-save-email {
+  animation: ob-s3-btn-hover 0.5s ease-in-out 11.4s forwards,
+    ob-pflow-btn-click 0.25s ease-out 11.9s 1;
+}
+
+.ob-s4-cursor-email {
+  opacity: 0;
+  animation: ob-s4-cursor-email 31.24s linear forwards,
+    ob-walkthrough-cursor-arrive 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 1.5s 1,
+    ob-walkthrough-cursor-click 0.1s ease-out 1.5s 1;
+}
+
+.ob-s4-add-li-btn {
+  animation: ob-s3-btn-hover 0.5s ease-in-out 15.55s forwards,
+    ob-pflow-btn-click 0.25s ease-out 16.05s 1,
+    ob-fade-out 0.25s ease-in 16.33s forwards;
+}
+
+.ob-s4-li-empty {
+  animation: ob-fade-out 0.35s ease-in 27.24s forwards;
+}
+
+.ob-s4-li-card-wrap {
+  animation: ob-fade-in 0.4s ease-out 27.24s forwards;
+}
+
+.ob-s4-li-card {
+  animation: ob-s3-card-in 0.4s ease-out 27.24s forwards;
+}
+
+.ob-s4-overlay-li {
+  animation: ob-fade-in 0.5s ease-out 16.05s forwards, ob-fade-out 0.35s ease-in 26.59s forwards;
+}
+
+.ob-s4-modal-li {
+  overflow: visible;
+  animation: ob-fade-in 0.35s ease-out 16.55s forwards, ob-fade-out 0.35s ease-in 26.59s forwards;
+}
+
+/* LinkedIn: copy from a mock message thread, then paste */
+.ob-s4-li-select {
+  opacity: 0;
+  animation: ob-fade-in 0.3s ease-out 19.59s both, ob-fade-out 0.25s ease-in 20.79s both;
+}
+
+.ob-s4-li-kbd-a {
+  animation: ob-fade-in 0.25s ease-out 19.59s both, ob-fade-out 0.2s ease-in 20.79s both;
+}
+
+.ob-s4-li-kbd-c {
+  animation: ob-fade-in 0.25s ease-out 20.79s both, ob-fade-out 0.2s ease-in 21.79s both;
+}
+
+.ob-s4-li-copied {
+  opacity: 0;
+  animation: ob-fade-in 0.25s ease-out 20.79s both, ob-fade-out 0.25s ease-in 21.79s both;
+}
+
+.ob-s4-li-kbd-v {
+  animation: ob-fade-in 0.25s ease-out 21.99s both, ob-fade-out 0.2s ease-in 22.99s both;
+}
+
+.ob-s4-li-paste {
+  animation: ob-pflow-paste-pop 0.15s ease-out 22.19s forwards;
+}
+
+.ob-s4-li-profile-trigger {
+  animation: ob-s3-profile-trigger-focus 0.3s ease-out 23.69s forwards;
+}
+
+.ob-s4-li-profile-placeholder {
+  animation: ob-fade-out 0.2s ease-in 25.89s forwards;
+}
+
+.ob-s4-li-profile-value {
+  animation: ob-fade-in 0.25s ease-out 25.89s forwards;
+}
+
+.ob-s4-li-profile-menu {
+  visibility: hidden;
+  opacity: 0;
+  animation: ob-s3-profile-menu-open 0.2s ease-out 23.99s forwards,
+    ob-s3-profile-menu-close 0.2s ease-in 25.89s forwards;
+}
+
+.ob-s4-li-profile-opt-selected {
+  background: #e6f1fb;
+  animation: ob-s3-profile-opt-select-flash 0.35s ease-out 25.49s 1;
+}
+
+.ob-s4-li-profile-cursor {
+  animation: ob-fade-in 0.2s ease-out 23.99s forwards,
+    ob-walkthrough-cursor-arrive 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 23.99s 1,
+    ob-walkthrough-cursor-click 0.1s ease-out 25.49s 1,
+    ob-fade-out 0.2s ease-in 25.89s forwards;
+}
+
+.ob-s4-save-li {
+  animation: ob-s3-btn-hover 0.5s ease-in-out 26.09s forwards,
+    ob-pflow-btn-click 0.25s ease-out 26.59s 1;
+}
+
+.ob-s4-cursor-li {
+  opacity: 0;
+  animation: ob-s4-cursor-li 31.24s linear forwards,
+    ob-walkthrough-cursor-arrive 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 16.05s 1,
+    ob-walkthrough-cursor-click 0.1s ease-out 16.05s 1;
 }
 
 

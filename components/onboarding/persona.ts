@@ -1,44 +1,41 @@
 export const OB_USER = {
-  name: "Sarah Chen",
-  company: "Wharton School",
+  name: "Aanya Parikh",
+  company: "The Wharton School",
   role: "MBA Candidate",
-  location: "Philadelphia, PA",
-  undergrad: "UC Berkeley",
-  grad: "Wharton School of Business",
-  background: "4 years investment banking at Goldman",
-  linkedinUrl: "linkedin.com/in/sarah-chen",
-  headline: "MBA Candidate at Wharton, ex-Goldman",
-  voiceProfile: "VC and fintech outreach",
-  secondaryVoiceProfile: "MBA networking",
+  location: "Philadelphia, Pennsylvania, United States",
+  undergrad: "Brown University",
+  grad: "The Wharton School",
+  background: "3 years in private equity secondaries at Hollyport Capital",
+  linkedinUrl: "linkedin.com/in/aanya-parikh",
+  headline: "MBA Candidate at The Wharton School",
+  voiceProfile: "VC outreach",
+  secondaryVoiceProfile: "Consulting outreach",
   emailSampleLabel: "Cold outreach to investor",
-  linkedinSampleLabel: "Cold LinkedIn note",
+  linkedinSampleLabel: "Cold outreach to consultant",
   styleInstructions:
-    "Under 150 words. Reference something specific. End with a clear ask. No corporate jargon.",
+    "Concise, confident, and specific. Reference a portfolio company or thesis. Lead with genuine interest, not a pitch. End with a clear, low-friction ask (15-20 min call).",
   secondaryStyleInstructions:
-    "Warm and personal. Reference shared experiences. Under 100 words.",
+    "Professional and warm. Reference a shared connection or specific project/practice area. Show you've done homework on the firm. Ask for a short informational call, not a job.",
   sampleEmail:
-    "Hi Marcus, I came across your piece on fintech infrastructure. Goldman M&A to Wharton MBA. Would love 20 minutes to learn how you think about the space. Best, Sarah",
+    "Hi Marcus, I came across your piece on fintech infrastructure. I'm an MBA candidate at Wharton and would love 20 minutes to learn how you think about the space. Best, Aanya",
   sampleLinkedIn:
-    "Hi Marcus, loved your fintech piece. Goldman M&A to Wharton. Would love to connect.",
+    "Hi David, I read your post on PE due diligence and it really resonated with my time in secondaries at Hollyport. Would love to connect and hear more about the private equity practice at Bain — open to a quick call sometime?",
 } as const
 
-export const OB_RAW_LINKEDIN_SARAH = `Sarah Chen
-MBA Candidate at Wharton, ex-Goldman
+export const OB_RAW_LINKEDIN_USER = `Aanya Parikh
+MBA Candidate at The Wharton School
 Philadelphia, Pennsylvania, United States · 500+ connections
 
 About
-MBA candidate at the Wharton School. Previously four years in Technology M&A at Goldman Sachs. Interested in fintech, venture capital, and growth equity.
+MBA Candidate at The Wharton School, Class of 2028. Previously spent three years in private equity secondaries at Hollyport Capital.
 
 Experience
-Wharton School — MBA Candidate
-2024 – 2026 · Philadelphia, PA
-
-Goldman Sachs — Technology M&A, Associate
-2019 – 2023 · 4 yrs · New York, NY
+Hollyport Capital — Private Equity Secondaries
+2021 – 2024 · London
 
 Education
-The Wharton School — MBA, 2024 – 2026
-University of California, Berkeley — BA Economics, 2015 – 2019`
+The Wharton School — MBA Candidate, Class of 2028
+Brown University — Class of 2021`
 
 export const OB_RAW_LINKEDIN_PRIYA = `Priya Nair
 VP of Product at Stripe India
@@ -90,6 +87,12 @@ export const OB_CONTACTS = {
     role: "Partner",
     title: "Partner at Sequoia",
     followUpDetail: "Partner at Sequoia · Last interaction 15 days ago",
+  },
+  consultant: {
+    name: "David Chen",
+    company: "Bain & Company",
+    role: "Engagement Manager",
+    title: "Engagement Manager at Bain & Company",
   },
 } as const
 
