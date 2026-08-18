@@ -92,6 +92,10 @@ For education, use the degree type to determine which field to use:
 - Graduate degrees (MBA, MS, MA, JD, MD, PhD, MEng, or similar) → graduate_university
 If someone has both, populate both fields with the appropriate school for each degree.
 
+For location, determine the person's CURRENT location:
+- If they are currently enrolled in an undergraduate or graduate program (e.g. a degree listed as in-progress, "Candidate", "Class of" a current or future year, or an education entry with no end date), use the city where that school is located — not the city of any company or past employer.
+- Otherwise, use the city associated with their current company/role, or their profile's listed location if no current company city is available.
+
 For background, summarize their career path and industries based on work history. Keep it to 2-3 sentences.
 
 LinkedIn profile text:

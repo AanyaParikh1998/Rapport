@@ -125,7 +125,11 @@ Return an empty string if no email is found.
 For education, use the degree type to determine which field to use:
 - Undergraduate degrees (BA, BS, BBA, AB, BEng, or similar) → undergraduate_university
 - Graduate degrees (MBA, MS, MA, JD, MD, PhD, MEng, or similar) → graduate_university
-If someone has both, populate both fields with the appropriate school for each degree.
+If someone has both an undergraduate and a graduate degree, populate BOTH fields, even if it is the same institution for both. Do not leave graduate_university empty just because it matches undergraduate_university — repeat the school name in both fields. For example, someone with a Bachelor's and a Master's from "University of California, Berkeley" should have undergraduate_university and graduate_university both set to "University of California, Berkeley".
+
+For city, determine the person's CURRENT location:
+- If they are currently enrolled in an undergraduate or graduate program (e.g. a degree listed as in-progress, "Candidate", "Class of" a current or future year, or an education entry with no end date), use the city where that school is located — not the city of any company or past employer.
+- Otherwise, use the city associated with their current company/role, or their profile's listed location if no current company city is available.
 
 LinkedIn profile text:
 ${text}`,
