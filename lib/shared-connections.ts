@@ -22,27 +22,43 @@ export function normalizeMatchField(value: string | null | undefined): string {
   return (value ?? "").trim().toLowerCase()
 }
 
-function getNormalizedSchoolLabels(contact: Contact): Map<string, string> {
-  const schools = new Map<string, string>()
+function getNormalizedSchools(contact: Contact): { normalized: string; label: string }[] {
+  const schools: { normalized: string; label: string }[] = []
+  const seen = new Set<string>()
 
   for (const school of [contact.undergraduateUniversity, contact.graduateUniversity]) {
     const trimmed = (school ?? "").trim()
     const normalized = normalizeMatchField(trimmed)
-    if (!normalized) continue
-    if (!schools.has(normalized)) schools.set(normalized, trimmed)
+    if (!normalized || seen.has(normalized)) continue
+    seen.add(normalized)
+    schools.push({ normalized, label: trimmed })
   }
 
   return schools
 }
 
+function isSameSchool(a: string, b: string): boolean {
+  if (a === b) return true
+
+  const [shorter, longer] = a.length <= b.length ? [a, b] : [b, a]
+  if (!shorter || !longer.startsWith(shorter)) return false
+
+  // Only treat the extra text as "same school, more detail" if it's a
+  // comma-separated suffix (e.g. "..., berkeley" + ", haas school of
+  // business") — not an unrelated word tacked on directly
+  // (e.g. "berkeley" + " extension").
+  return longer[shorter.length] === ","
+}
+
 export function getSharedSchoolLabels(a: Contact, b: Contact): string[] {
-  const aSchools = getNormalizedSchoolLabels(a)
-  const bSchools = getNormalizedSchoolLabels(b)
+  const aSchools = getNormalizedSchools(a)
+  const bSchools = getNormalizedSchools(b)
   const shared: string[] = []
 
-  for (const [normalized, label] of aSchools) {
-    if (bSchools.has(normalized)) {
-      shared.push(label)
+  for (const aSchool of aSchools) {
+    const hasMatch = bSchools.some((bSchool) => isSameSchool(aSchool.normalized, bSchool.normalized))
+    if (hasMatch) {
+      shared.push(aSchool.label)
     }
   }
 
