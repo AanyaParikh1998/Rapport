@@ -62,6 +62,7 @@ type LinkedInParseResponse = {
   undergraduate_university?: string
   graduate_university?: string
   mutual_count?: number | null
+  email?: string
 }
 
 function getAutofilledFieldKeys(data: LinkedInParseResponse): Set<AutofillFieldKey> {
@@ -168,6 +169,7 @@ export function AddContactModal({
         graduateUniversity: data.graduate_university || current.graduateUniversity,
         mutualCount:
           typeof data.mutual_count === "number" ? data.mutual_count : current.mutualCount,
+        email: data.email || current.email,
       }))
       setAutofilledFieldKeys(getAutofilledFieldKeys(data))
       setHasAutofilled(true)
@@ -262,96 +264,94 @@ export function AddContactModal({
             </p>
           ) : null}
 
-          {hasAutofilled ? (
-            <section className="flex flex-col gap-3">
-              <p className={SECTION_LABEL_CLASS}>From LinkedIn</p>
+          <section className="flex flex-col gap-3">
+            <p className={SECTION_LABEL_CLASS}>From LinkedIn</p>
 
-              <FormField label="Name" showCheck={showAutofillCheck("name")}>
-                <input
-                  required
-                  value={form.name}
-                  onChange={(event) => updateField("name", event.target.value)}
-                  className={autofillInputClass("name")}
-                  placeholder="Maya Chen"
-                />
-              </FormField>
+            <FormField label="Name" showCheck={showAutofillCheck("name")}>
+              <input
+                required
+                value={form.name}
+                onChange={(event) => updateField("name", event.target.value)}
+                className={autofillInputClass("name")}
+                placeholder="Maya Chen"
+              />
+            </FormField>
 
-              <FormField label="Company" showCheck={showAutofillCheck("company")}>
-                <input
-                  required
-                  value={form.company}
-                  onChange={(event) => updateField("company", event.target.value)}
-                  className={autofillInputClass("company")}
-                  placeholder="Stripe"
-                />
-              </FormField>
+            <FormField label="Company" showCheck={showAutofillCheck("company")}>
+              <input
+                required
+                value={form.company}
+                onChange={(event) => updateField("company", event.target.value)}
+                className={autofillInputClass("company")}
+                placeholder="Stripe"
+              />
+            </FormField>
 
-              <FormField label="Role" showCheck={showAutofillCheck("role")}>
-                <input
-                  required
-                  value={form.role}
-                  onChange={(event) => updateField("role", event.target.value)}
-                  className={autofillInputClass("role")}
-                  placeholder="VP of Engineering"
-                />
-              </FormField>
+            <FormField label="Role" showCheck={showAutofillCheck("role")}>
+              <input
+                required
+                value={form.role}
+                onChange={(event) => updateField("role", event.target.value)}
+                className={autofillInputClass("role")}
+                placeholder="VP of Engineering"
+              />
+            </FormField>
 
-              <FormField label="City" showCheck={showAutofillCheck("city")}>
-                <input
-                  value={form.city}
-                  onChange={(event) => updateField("city", event.target.value)}
-                  className={autofillInputClass("city")}
-                  placeholder="San Francisco, CA"
-                />
-              </FormField>
+            <FormField label="City" showCheck={showAutofillCheck("city")}>
+              <input
+                value={form.city}
+                onChange={(event) => updateField("city", event.target.value)}
+                className={autofillInputClass("city")}
+                placeholder="San Francisco, CA"
+              />
+            </FormField>
 
-              <FormField
-                label="Undergrad university"
-                showCheck={showAutofillCheck("undergraduateUniversity")}
-              >
-                <input
-                  value={form.undergraduateUniversity}
-                  onChange={(event) =>
-                    updateField("undergraduateUniversity", event.target.value)
-                  }
-                  className={autofillInputClass("undergraduateUniversity")}
-                  placeholder="Stanford University"
-                />
-              </FormField>
+            <FormField
+              label="Undergrad university"
+              showCheck={showAutofillCheck("undergraduateUniversity")}
+            >
+              <input
+                value={form.undergraduateUniversity}
+                onChange={(event) =>
+                  updateField("undergraduateUniversity", event.target.value)
+                }
+                className={autofillInputClass("undergraduateUniversity")}
+                placeholder="Stanford University"
+              />
+            </FormField>
 
-              <FormField
-                label="Graduate university (optional)"
-                showCheck={showAutofillCheck("graduateUniversity")}
-              >
-                <input
-                  value={form.graduateUniversity}
-                  onChange={(event) => updateField("graduateUniversity", event.target.value)}
-                  className={autofillInputClass("graduateUniversity")}
-                  placeholder="Harvard Business School"
-                />
-              </FormField>
+            <FormField
+              label="Graduate university (optional)"
+              showCheck={showAutofillCheck("graduateUniversity")}
+            >
+              <input
+                value={form.graduateUniversity}
+                onChange={(event) => updateField("graduateUniversity", event.target.value)}
+                className={autofillInputClass("graduateUniversity")}
+                placeholder="Harvard Business School"
+              />
+            </FormField>
 
-              <FormField
-                label="Mutual connections"
-                showCheck={showAutofillCheck("mutualCount")}
-              >
-                <input
-                  type="number"
-                  min={0}
-                  value={form.mutualCount ?? ""}
-                  onChange={(event) => {
-                    const value = event.target.value
-                    updateField(
-                      "mutualCount",
-                      value === "" ? null : Math.max(0, Number.parseInt(value, 10) || 0),
-                    )
-                  }}
-                  className={autofillInputClass("mutualCount")}
-                  placeholder="12"
-                />
-              </FormField>
-            </section>
-          ) : null}
+            <FormField
+              label="Mutual connections"
+              showCheck={showAutofillCheck("mutualCount")}
+            >
+              <input
+                type="number"
+                min={0}
+                value={form.mutualCount ?? ""}
+                onChange={(event) => {
+                  const value = event.target.value
+                  updateField(
+                    "mutualCount",
+                    value === "" ? null : Math.max(0, Number.parseInt(value, 10) || 0),
+                  )
+                }}
+                className={autofillInputClass("mutualCount")}
+                placeholder="12"
+              />
+            </FormField>
+          </section>
 
           <section className="flex flex-col gap-3">
             <p className={SECTION_LABEL_CLASS}>Your input</p>
