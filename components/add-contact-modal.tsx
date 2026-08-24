@@ -1,11 +1,14 @@
 "use client"
 
-import { useState } from "react"
-import { Check, X } from "lucide-react"
+import { useMemo, useState } from "react"
+import { AlertTriangle, Check, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { createContact, type NewContactInput } from "@/lib/contacts"
 import type { Contact } from "@/lib/data"
+import { getUniversityOptions } from "@/lib/universities"
+import { getCityOptions } from "@/lib/cities"
+import { AutocompleteInput } from "@/components/autocomplete-input"
 
 const GOAL_OPTIONS = ["Informational call", "Referral", "Mentorship"] as const
 const SOURCE_OPTIONS = ["LinkedIn", "Warm intro", "Conference", "Personal", "Other"] as const
@@ -15,6 +18,8 @@ const EMPTY_FORM: NewContactInput = {
   name: "",
   company: "",
   role: "",
+  priorCompany: "",
+  priorRole: "",
   city: "",
   undergraduateUniversity: "",
   graduateUniversity: "",
@@ -31,6 +36,8 @@ type AutofillFieldKey =
   | "name"
   | "company"
   | "role"
+  | "priorCompany"
+  | "priorRole"
   | "city"
   | "undergraduateUniversity"
   | "graduateUniversity"
@@ -58,11 +65,14 @@ type LinkedInParseResponse = {
   name?: string
   company?: string
   role?: string
+  prior_company?: string
+  prior_role?: string
   city?: string
   undergraduate_university?: string
   graduate_university?: string
   mutual_count?: number | null
   email?: string
+  warning?: string | null
 }
 
 function getAutofilledFieldKeys(data: LinkedInParseResponse): Set<AutofillFieldKey> {
@@ -71,6 +81,8 @@ function getAutofilledFieldKeys(data: LinkedInParseResponse): Set<AutofillFieldK
   if (data.name?.trim()) keys.add("name")
   if (data.company?.trim()) keys.add("company")
   if (data.role?.trim()) keys.add("role")
+  if (data.prior_company?.trim()) keys.add("priorCompany")
+  if (data.prior_role?.trim()) keys.add("priorRole")
   if (data.city?.trim()) keys.add("city")
   if (data.undergraduate_university?.trim()) keys.add("undergraduateUniversity")
   if (data.graduate_university?.trim()) keys.add("graduateUniversity")
@@ -83,16 +95,21 @@ export function AddContactModal({
   open,
   onClose,
   onCreated,
+  contacts,
 }: {
   open: boolean
   onClose: () => void
   onCreated: (contact: Contact) => void
+  contacts: Contact[]
 }) {
   const [form, setForm] = useState<NewContactInput>(EMPTY_FORM)
   const [linkedinText, setLinkedinText] = useState("")
+  const universityOptions = useMemo(() => getUniversityOptions(contacts), [contacts])
+  const cityOptions = useMemo(() => getCityOptions(contacts), [contacts])
   const [submitting, setSubmitting] = useState(false)
   const [autofilling, setAutofilling] = useState(false)
   const [autofillError, setAutofillError] = useState<string | null>(null)
+  const [autofillWarning, setAutofillWarning] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [hasAutofilled, setHasAutofilled] = useState(false)
   const [autofilledFieldKeys, setAutofilledFieldKeys] = useState<Set<AutofillFieldKey>>(
@@ -109,6 +126,7 @@ export function AddContactModal({
     setForm(EMPTY_FORM)
     setLinkedinText("")
     setAutofillError(null)
+    setAutofillWarning(null)
     setError(null)
     setHasAutofilled(false)
     setAutofilledFieldKeys(new Set())
@@ -143,6 +161,7 @@ export function AddContactModal({
     }
 
     setAutofillError(null)
+    setAutofillWarning(null)
     setAutofilling(true)
 
     try {
@@ -158,11 +177,14 @@ export function AddContactModal({
         throw new Error(data.error ?? "Failed to parse LinkedIn profile")
       }
 
+      setAutofillWarning(data.warning ?? null)
       setForm((current) => ({
         ...current,
         name: data.name || current.name,
         company: data.company || current.company,
         role: data.role || current.role,
+        priorCompany: data.prior_company || current.priorCompany,
+        priorRole: data.prior_role || current.priorRole,
         city: data.city || current.city,
         undergraduateUniversity:
           data.undergraduate_university || current.undergraduateUniversity,
@@ -247,6 +269,10 @@ export function AddContactModal({
                 className={cn(INPUT_NEUTRAL_CLASS_NAME, "min-h-[140px] resize-y")}
               />
             </FormField>
+            <p className="text-[10px] leading-snug text-muted-foreground">
+              Tip: scroll to the full Experience and Education sections before copying — not
+              just the top of the profile.
+            </p>
             <Button
               type="button"
               variant="outline"
@@ -262,6 +288,13 @@ export function AddContactModal({
             <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-[12px] text-destructive">
               {autofillError}
             </p>
+          ) : null}
+
+          {autofillWarning ? (
+            <div className="flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2.5">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
+              <p className="text-[12px] leading-snug text-amber-800">{autofillWarning}</p>
+            </div>
           ) : null}
 
           <section className="flex flex-col gap-3">
@@ -297,12 +330,34 @@ export function AddContactModal({
               />
             </FormField>
 
-            <FormField label="City" showCheck={showAutofillCheck("city")}>
+            <FormField
+              label="Prior company (optional)"
+              showCheck={showAutofillCheck("priorCompany")}
+            >
               <input
+                value={form.priorCompany}
+                onChange={(event) => updateField("priorCompany", event.target.value)}
+                className={autofillInputClass("priorCompany")}
+                placeholder="Most recent prior employer"
+              />
+            </FormField>
+
+            <FormField label="Prior role (optional)" showCheck={showAutofillCheck("priorRole")}>
+              <input
+                value={form.priorRole}
+                onChange={(event) => updateField("priorRole", event.target.value)}
+                className={autofillInputClass("priorRole")}
+                placeholder="Their role there"
+              />
+            </FormField>
+
+            <FormField label="City" showCheck={showAutofillCheck("city")}>
+              <AutocompleteInput
                 value={form.city}
-                onChange={(event) => updateField("city", event.target.value)}
+                onChange={(value) => updateField("city", value)}
+                options={cityOptions}
                 className={autofillInputClass("city")}
-                placeholder="San Francisco, CA"
+                placeholder="Start typing a city..."
               />
             </FormField>
 
@@ -310,13 +365,12 @@ export function AddContactModal({
               label="Undergrad university"
               showCheck={showAutofillCheck("undergraduateUniversity")}
             >
-              <input
+              <AutocompleteInput
                 value={form.undergraduateUniversity}
-                onChange={(event) =>
-                  updateField("undergraduateUniversity", event.target.value)
-                }
+                onChange={(value) => updateField("undergraduateUniversity", value)}
+                options={universityOptions}
                 className={autofillInputClass("undergraduateUniversity")}
-                placeholder="Stanford University"
+                placeholder="Start typing a university..."
               />
             </FormField>
 
@@ -324,11 +378,12 @@ export function AddContactModal({
               label="Graduate university (optional)"
               showCheck={showAutofillCheck("graduateUniversity")}
             >
-              <input
+              <AutocompleteInput
                 value={form.graduateUniversity}
-                onChange={(event) => updateField("graduateUniversity", event.target.value)}
+                onChange={(value) => updateField("graduateUniversity", value)}
+                options={universityOptions}
                 className={autofillInputClass("graduateUniversity")}
-                placeholder="Harvard Business School"
+                placeholder="Start typing a university..."
               />
             </FormField>
 

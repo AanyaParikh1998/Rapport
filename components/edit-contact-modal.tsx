@@ -1,10 +1,13 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { updateContact, type EditContactInput } from "@/lib/contacts"
 import type { Contact } from "@/lib/data"
+import { getUniversityOptions } from "@/lib/universities"
+import { getCityOptions } from "@/lib/cities"
+import { AutocompleteInput } from "@/components/autocomplete-input"
 
 const GOAL_OPTIONS = ["Informational call", "Referral", "Mentorship"] as const
 const SOURCE_OPTIONS = ["LinkedIn", "Warm intro", "Conference", "Personal", "Other"] as const
@@ -18,6 +21,8 @@ function contactToForm(contact: Contact): EditContactInput {
     name: contact.name,
     company: contact.company,
     role: contact.role,
+    priorCompany: contact.priorCompany ?? "",
+    priorRole: contact.priorRole ?? "",
     city: contact.city ?? "",
     undergraduateUniversity: contact.undergraduateUniversity ?? "",
     graduateUniversity: contact.graduateUniversity ?? "",
@@ -36,15 +41,19 @@ export function EditContactModal({
   contact,
   onClose,
   onUpdated,
+  contacts,
 }: {
   contact: Contact | null
   onClose: () => void
   onUpdated: (contact: Contact) => void
+  contacts: Contact[]
 }) {
   const [form, setForm] = useState<EditContactInput | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [hotTrackingPromptVisible, setHotTrackingPromptVisible] = useState(false)
+  const universityOptions = useMemo(() => getUniversityOptions(contacts), [contacts])
+  const cityOptions = useMemo(() => getCityOptions(contacts), [contacts])
 
   useEffect(() => {
     if (contact) {
@@ -189,30 +198,51 @@ export function EditContactModal({
             />
           </FormField>
 
-          <FormField label="City">
+          <FormField label="Prior company (optional)">
             <input
-              value={form.city}
-              onChange={(event) => updateField("city", event.target.value)}
+              value={form.priorCompany}
+              onChange={(event) => updateField("priorCompany", event.target.value)}
               className={inputClassName}
-              placeholder="San Francisco, CA"
+              placeholder="Most recent prior employer"
+            />
+          </FormField>
+
+          <FormField label="Prior role (optional)">
+            <input
+              value={form.priorRole}
+              onChange={(event) => updateField("priorRole", event.target.value)}
+              className={inputClassName}
+              placeholder="Their role there"
+            />
+          </FormField>
+
+          <FormField label="City">
+            <AutocompleteInput
+              value={form.city}
+              onChange={(value) => updateField("city", value)}
+              options={cityOptions}
+              className={inputClassName}
+              placeholder="Start typing a city..."
             />
           </FormField>
 
           <FormField label="Undergrad university">
-            <input
+            <AutocompleteInput
               value={form.undergraduateUniversity}
-              onChange={(event) => updateField("undergraduateUniversity", event.target.value)}
+              onChange={(value) => updateField("undergraduateUniversity", value)}
+              options={universityOptions}
               className={inputClassName}
-              placeholder="Stanford University"
+              placeholder="Start typing a university..."
             />
           </FormField>
 
           <FormField label="Graduate university (optional)">
-            <input
+            <AutocompleteInput
               value={form.graduateUniversity}
-              onChange={(event) => updateField("graduateUniversity", event.target.value)}
+              onChange={(value) => updateField("graduateUniversity", value)}
+              options={universityOptions}
               className={inputClassName}
-              placeholder="Harvard Business School"
+              placeholder="Start typing a university..."
             />
           </FormField>
 

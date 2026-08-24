@@ -37,35 +37,35 @@ Education
 The Wharton School — MBA Candidate, Class of 2028
 Brown University — Class of 2021`
 
-export const OB_RAW_LINKEDIN_PRIYA = `Priya Nair
-VP of Product at Stripe India
-Mumbai, Maharashtra, India · 500+ connections
+export const OB_RAW_LINKEDIN_JOHN = `John Smith
+Consulting Manager at Accenture
+Chicago, Illinois, United States · 500+ connections
 28 mutual connections
 
 About
-VP of Product at Stripe India, building payments infrastructure for the Indian market. Previously product lead at Razorpay. IIM Ahmedabad.
+Consulting Manager at Accenture, focused on strategy & operations consulting for Fortune 500 clients. Previously a senior consultant at Accenture. Kellogg MBA.
 
 Experience
-Stripe India — VP of Product
-2022 – Present · Mumbai, India
+Accenture — Consulting Manager
+2022 – Present · Chicago, IL
 
-Razorpay — Senior Product Manager
-2018 – 2022 · Bangalore, India
+Accenture — Senior Consultant
+2018 – 2022 · Chicago, IL
 
 Education
-Indian Institute of Management Ahmedabad — MBA, 2016 – 2018
-BITS Pilani — BE Computer Science, 2012 – 2016`
+Kellogg School of Management — MBA, 2016 – 2018
+University of Michigan — BA Economics, 2012 – 2016`
 
 export const OB_CONTACTS = {
-  priya: {
-    name: "Priya Nair",
-    company: "Stripe India",
-    role: "VP of Product",
-    title: "VP of Product at Stripe India",
-    city: "Mumbai",
-    university: "IIM Ahmedabad",
+  john: {
+    name: "John Smith",
+    company: "Accenture",
+    role: "Consulting Manager",
+    title: "Consulting Manager at Accenture",
+    city: "Chicago",
+    university: "Kellogg",
     mutuals: "28",
-    linkedinUrl: "linkedin.com/in/priya-nair",
+    linkedinUrl: "linkedin.com/in/john-smith-consulting",
   },
   james: {
     name: "James Liu",
@@ -96,12 +96,12 @@ export const OB_CONTACTS = {
   },
 } as const
 
-export const OB_DRAFT_SUBJECT = "Connecting re: fintech at Stripe India"
+export const OB_DRAFT_SUBJECT = "Connecting re: consulting at Accenture"
 
 export const OB_DRAFT_BODY_LINES = [
-  "Hi Priya, I came across your profile and was impressed by your work leading product at Stripe India. Heading to Wharton this fall after four years in fintech.",
-  "Would love 20 minutes to learn how you think about product in emerging markets.",
-  "Best, Sarah",
+  "Hi John, I came across your profile and was impressed by your work in strategy consulting at Accenture. Heading to Wharton this fall after three years in PE.",
+  "Would love 20 minutes to learn how you think about case work and client strategy.",
+  "Best, Aanya",
 ] as const
 
 export const STAGE_BORDER = {

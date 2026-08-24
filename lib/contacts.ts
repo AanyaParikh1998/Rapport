@@ -21,6 +21,8 @@ export type ContactRow = {
   name: string
   company: string
   role: string
+  prior_company: string | null
+  prior_role: string | null
   goal: string
   source: string
   connection_type: string
@@ -46,6 +48,8 @@ export type NewContactInput = {
   name: string
   company: string
   role: string
+  priorCompany: string
+  priorRole: string
   city: string
   undergraduateUniversity: string
   graduateUniversity: string
@@ -63,6 +67,8 @@ export type EditContactInput = {
   name: string
   company: string
   role: string
+  priorCompany: string
+  priorRole: string
   city: string
   undergraduateUniversity: string
   graduateUniversity: string
@@ -228,6 +234,8 @@ export function mapContactRowToContact(
     name: row.name,
     role: row.role,
     company: row.company,
+    priorCompany: row.prior_company ?? "",
+    priorRole: row.prior_role ?? "",
     city: normalizeCityName(row.city) || normalizeCityName(row.location),
     undergraduateUniversity: row.undergraduate_university ?? "",
     graduateUniversity: row.graduate_university ?? "",
@@ -315,6 +323,8 @@ export async function createContact(input: NewContactInput): Promise<Contact> {
       name: input.name.trim(),
       company: input.company.trim(),
       role: input.role.trim(),
+      prior_company: input.priorCompany.trim() || null,
+      prior_role: input.priorRole.trim() || null,
       city: input.city.trim() || null,
       undergraduate_university: input.undergraduateUniversity.trim() || null,
       graduate_university: input.graduateUniversity.trim() || null,
@@ -352,6 +362,8 @@ export async function updateContact(id: string, input: EditContactInput): Promis
       name: input.name.trim(),
       company: input.company.trim(),
       role: input.role.trim(),
+      prior_company: input.priorCompany.trim() || null,
+      prior_role: input.priorRole.trim() || null,
       city: input.city.trim() || null,
       undergraduate_university: input.undergraduateUniversity.trim() || null,
       graduate_university: input.graduateUniversity.trim() || null,

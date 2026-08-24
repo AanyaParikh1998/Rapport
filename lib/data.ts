@@ -14,6 +14,8 @@ export interface Contact {
   name: string
   role: string
   company: string
+  priorCompany?: string
+  priorRole?: string
   city?: string
   undergraduateUniversity?: string
   graduateUniversity?: string

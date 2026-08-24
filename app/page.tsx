@@ -926,12 +926,14 @@ function PipelinePageContent() {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onCreated={handleContactCreated}
+        contacts={contacts}
       />
 
       <EditContactModal
         contact={editingContact}
         onClose={() => setEditingContact(null)}
         onUpdated={handleContactUpdated}
+        contacts={contacts}
       />
 
       <SendMessageConfirmModal

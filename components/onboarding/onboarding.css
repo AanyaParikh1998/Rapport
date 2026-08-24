@@ -1451,18 +1451,18 @@
   animation: ob-fade-in 0.25s ease-out 10.65s forwards, ob-fade-out 0.25s ease-in 11.4s forwards;
 }
 
-/* Scene 8: Pipeline drag — Priya only, four columns */
-.ob-s8-priya-track {
-  animation: ob-s8-priya-track 9s ease-in-out forwards;
+/* Scene 8: Pipeline drag — John only, four columns */
+.ob-s8-john-track {
+  animation: ob-s8-john-track 9s ease-in-out forwards;
 }
 
-.ob-s8-priya {
+.ob-s8-john {
   border-left: 3px solid #888780;
-  animation: ob-s8-priya-border 9s ease-in-out forwards,
-    ob-s8-priya-pulse 1.125s ease-in-out 0.625s 1;
+  animation: ob-s8-john-border 9s ease-in-out forwards,
+    ob-s8-john-pulse 1.125s ease-in-out 0.625s 1;
 }
 
-@keyframes ob-s8-priya-pulse {
+@keyframes ob-s8-john-pulse {
   0%,
   100% {
     box-shadow: 0 0 0 0 transparent;
@@ -1472,7 +1472,7 @@
   }
 }
 
-@keyframes ob-s8-priya-track {
+@keyframes ob-s8-john-track {
   0%,
   16% {
     transform: translateX(0);
@@ -1500,7 +1500,7 @@
   }
 }
 
-@keyframes ob-s8-priya-border {
+@keyframes ob-s8-john-border {
   0%,
   27% {
     border-left-color: #888780;
@@ -1552,7 +1552,7 @@
   }
 }
 
-/* Scene 11: Calendar — two examples (James, then Priya) */
+/* Scene 11: Calendar — two examples (James, then John) */
 .ob-s11-stack {
   display: flex;
   flex-direction: column;
@@ -1655,7 +1655,7 @@
 }
 
 .ob-s11-james-track,
-.ob-s11-priya-track {
+.ob-s11-john-track {
   will-change: transform;
 }
 
@@ -1680,26 +1680,26 @@
   }
 }
 
-.ob-s11-priya-track {
+.ob-s11-john-track {
   transform: translate(calc(200% + 1.5rem), 0);
-  animation: ob-s11-priya-move 0.8s ease-in-out 10.8s forwards;
+  animation: ob-s11-john-move 0.8s ease-in-out 10.8s forwards;
 }
 
-.ob-s11-priya {
-  animation: ob-s11-priya-border 0.35s ease-out 11.6s forwards;
+.ob-s11-john {
+  animation: ob-s11-john-border 0.35s ease-out 11.6s forwards;
 }
 
-.ob-s11-priya-check {
+.ob-s11-john-check {
   animation: ob-fade-in 0.35s ease-out 11.6s forwards, ob-fade-out 0.35s ease-in 12.1s forwards;
 }
 
-@keyframes ob-s11-priya-move {
+@keyframes ob-s11-john-move {
   to {
     transform: translate(calc(300% + 2.25rem), 0);
   }
 }
 
-@keyframes ob-s11-priya-border {
+@keyframes ob-s11-john-border {
   to {
     border-left-color: #639922;
   }

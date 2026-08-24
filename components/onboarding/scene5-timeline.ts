@@ -9,7 +9,7 @@ const POST_HOLD = 0.8
 
 const MANUAL_START = 10.0
 
-export const S5_EMAIL_TEXT = "priya.nair@stripe.com"
+export const S5_EMAIL_TEXT = "j.smith@accenture.com"
 export const S5_EMAIL_CHAR_MS = 0.05
 const S5_EMAIL_TYPING_DURATION = S5_EMAIL_TEXT.length * S5_EMAIL_CHAR_MS
 

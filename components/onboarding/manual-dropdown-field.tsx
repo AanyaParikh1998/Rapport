@@ -1,10 +1,11 @@
 "use client"
 
-import { useCallback, useLayoutEffect, useRef, useState, type ReactNode } from "react"
+import { useRef, type ReactNode } from "react"
 import { createPortal } from "react-dom"
 import { ChevronDown, Pencil } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { WalkthroughCursor } from "@/components/onboarding/walkthrough-cursor"
+import { useTrackedTriggerRect } from "@/components/onboarding/use-tracked-trigger-rect"
 
 export type ManualDropdownDef = {
   label: string
@@ -86,28 +87,7 @@ export function ManualDropdownField({
   classPrefix,
 }: ManualDropdownDef) {
   const triggerRef = useRef<HTMLDivElement>(null)
-  const [mounted, setMounted] = useState(false)
-  const [menuRect, setMenuRect] = useState<{ top: number; left: number; width: number } | null>(
-    null,
-  )
-
-  const updateMenuPosition = useCallback(() => {
-    const trigger = triggerRef.current
-    if (!trigger) return
-    const rect = trigger.getBoundingClientRect()
-    setMenuRect({
-      top: rect.bottom + 4,
-      left: rect.left,
-      width: rect.width,
-    })
-  }, [])
-
-  useLayoutEffect(() => {
-    setMounted(true)
-    updateMenuPosition()
-    window.addEventListener("resize", updateMenuPosition)
-    return () => window.removeEventListener("resize", updateMenuPosition)
-  }, [updateMenuPosition])
+  const { mounted, menuRect } = useTrackedTriggerRect(triggerRef)
 
   return (
     <div className={`${classPrefix}-wrap relative min-w-0`}>
@@ -144,6 +124,8 @@ export function ManualDropdownField({
                   top: menuRect.top,
                   left: menuRect.left,
                   minWidth: menuRect.width,
+                  transform: `scale(${menuRect.scale})`,
+                  transformOrigin: "top left",
                   zIndex: 1000,
                 }}
                 role="listbox"

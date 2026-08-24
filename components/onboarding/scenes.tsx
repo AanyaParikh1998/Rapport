@@ -25,7 +25,7 @@ import {
   OB_CONTACTS,
   OB_DRAFT_BODY_LINES,
   OB_DRAFT_SUBJECT,
-  OB_RAW_LINKEDIN_PRIYA,
+  OB_RAW_LINKEDIN_JOHN,
   OB_USER,
   STAGE_BORDER,
 } from "@/components/onboarding/persona"
@@ -499,7 +499,7 @@ export function SceneAct2Title() {
 }
 
 export function SceneAddContact() {
-  const c = OB_CONTACTS.priya
+  const c = OB_CONTACTS.john
   const autoFieldLayout: PasteFieldLayout = {
     left: [
       { label: "Name", value: c.name, fieldClass: "ob-s5-field-1" },
@@ -549,7 +549,7 @@ export function SceneAddContact() {
           url={c.linkedinUrl}
           location={c.city}
           experience={[`${c.company} · ${c.role}`]}
-          education={["IIM Ahmedabad · MBA", "BITS Pilani · BE Computer Science"]}
+          education={["Kellogg School of Management · MBA", "University of Michigan · BA Economics"]}
           dimClass="ob-s5-left-dim"
           selectClass="ob-s5-select"
           kbdAClass="ob-s5-kbd-a"
@@ -559,7 +559,7 @@ export function SceneAddContact() {
         />
         <LinkedInPasteFlowRight
           title="Add contact"
-          rawPaste={OB_RAW_LINKEDIN_PRIYA}
+          rawPaste={OB_RAW_LINKEDIN_JOHN}
           autoFieldLayout={autoFieldLayout}
           manualDropdowns={manualDropdowns}
           manualTextInput={manualTextInput}
@@ -601,7 +601,7 @@ function DraftLineReveal({
 }
 
 export function SceneDraftOutreach() {
-  const c = OB_CONTACTS.priya
+  const c = OB_CONTACTS.john
   const inputClassName =
     "w-full rounded-md border border-input bg-background px-2.5 py-1.5 text-[11px] text-foreground"
 
@@ -700,7 +700,7 @@ export function SceneDraftOutreach() {
 }
 
 export function ScenePipelineDrag() {
-  const priya = OB_CONTACTS.priya
+  const john = OB_CONTACTS.john
 
   return (
     <div className="flex h-full items-center justify-center px-4">
@@ -719,10 +719,10 @@ export function ScenePipelineDrag() {
           ))}
         </div>
 
-        <div className="ob-s8-priya-track pointer-events-none absolute bottom-0 left-0 top-[34px] w-[calc((100%-2.25rem)/4)]">
-          <div className="ob-s8-priya rounded-md border border-border bg-card p-2.5 shadow-sm">
-            <p className="truncate text-[12px] font-medium">{priya.name}</p>
-            <p className="truncate text-[11px] text-muted-foreground">{priya.title}</p>
+        <div className="ob-s8-john-track pointer-events-none absolute bottom-0 left-0 top-[34px] w-[calc((100%-2.25rem)/4)]">
+          <div className="ob-s8-john rounded-md border border-border bg-card p-2.5 shadow-sm">
+            <p className="truncate text-[12px] font-medium">{john.name}</p>
+            <p className="truncate text-[11px] text-muted-foreground">{john.title}</p>
           </div>
         </div>
       </div>
@@ -800,7 +800,7 @@ export function SceneFollowUpsMultiple() {
 }
 
 export function SceneCalendarIntegration() {
-  const priya = OB_CONTACTS.priya
+  const john = OB_CONTACTS.john
   const james = OB_CONTACTS.james
   const jamesSubtitle = "Founder at Bloom"
 
@@ -836,7 +836,7 @@ export function SceneCalendarIntegration() {
             <div className="flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 shadow-sm">
               <IconCalendar className="h-5 w-5 shrink-0 text-[#378ADD]" stroke={1.75} />
               <p className="min-w-0 flex-1 text-[13px] font-medium leading-snug text-foreground">
-                {priya.name} · Intro call ended 1 hour ago · Move to Met / Connected?
+                {john.name} · Intro call ended 1 hour ago · Move to Met / Connected?
               </p>
               <button
                 type="button"
@@ -881,15 +881,15 @@ export function SceneCalendarIntegration() {
               </div>
             </div>
 
-            <div className="ob-s11-priya-track pointer-events-none absolute left-0 top-[2.625rem] z-10 w-[calc((100%-2.25rem)/4)]">
+            <div className="ob-s11-john-track pointer-events-none absolute left-0 top-[2.625rem] z-10 w-[calc((100%-2.25rem)/4)]">
               <div
-                className="ob-s11-priya relative rounded-md border border-border bg-card p-3 shadow-sm"
+                className="ob-s11-john relative rounded-md border border-border bg-card p-3 shadow-sm"
                 style={{ borderLeft: `3px solid ${STAGE_BORDER.amber}` }}
               >
-                <p className="truncate text-[13px] font-medium">{priya.name}</p>
-                <p className="truncate text-[12px] text-muted-foreground">{priya.title}</p>
+                <p className="truncate text-[13px] font-medium">{john.name}</p>
+                <p className="truncate text-[12px] text-muted-foreground">{john.title}</p>
                 <Check
-                  className="ob-s11-priya-check ob-check absolute -right-1 -top-1 h-4 w-4 rounded-full bg-background opacity-0"
+                  className="ob-s11-john-check ob-check absolute -right-1 -top-1 h-4 w-4 rounded-full bg-background opacity-0"
                   strokeWidth={2.5}
                 />
               </div>
@@ -985,9 +985,9 @@ export const WALKTHROUGH_SCENES: WalkthroughSceneDef[] = [
   {
     id: "pipeline-drag",
     actLabel: "Act 2: Using Rapport",
-    caption: "After sending your message, move Priya to In progress",
+    caption: "After sending your message, move John to In progress",
     captionPhases: [
-      { atMs: 0, text: "After sending your message, move Priya to In progress" },
+      { atMs: 0, text: "After sending your message, move John to In progress" },
       { atMs: 4000, text: "When she responds, move her to Responded" },
       { atMs: 6500, text: "After your call, move her to Met / Connected" },
     ],

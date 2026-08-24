@@ -45,6 +45,8 @@ export function OnboardingWalkthrough({
   const accumulatedPauseRef = useRef(0)
   const pausedAtRef = useRef<number | null>(null)
   const sceneContainerRef = useRef<HTMLDivElement>(null)
+  const stageRef = useRef<HTMLDivElement>(null)
+  const appliedScaleRef = useRef(1)
   const progressBarRef = useRef<HTMLDivElement>(null)
   const progressTrackRef = useRef<HTMLDivElement>(null)
   const isScrubbingRef = useRef(false)
@@ -100,6 +102,128 @@ export function OnboardingWalkthrough({
 
     return () => window.clearTimeout(timer)
   }, [open, sceneIndex, scene.durationMs, isStatic, sceneComplete, paused])
+
+  // Scale the scene content down (never up) so it always fits inside the
+  // stage's clip rect, instead of relying on every scene's own layout to
+  // happen to fit.
+  //
+  // The tricky part is that a scene's content isn't a fixed size: elements
+  // like the "Saved" confirmation pill start at `max-height: 0` and animate
+  // open later via CSS (`forwards` fill mode). Measuring the *current* DOM
+  // would read that pill as zero-height for most of the scene, then see it
+  // jump to full height right when it reveals — and a scale/height change
+  // applied at that moment reads as the whole panel visibly shrinking and
+  // sliding up mid-scene, which is the glitch this is guarding against.
+  // Instead, every animation on the subtree is momentarily seeked to its
+  // final frame before measuring (then restored before the next paint), so
+  // the height used to compute scale already reflects the scene's fully
+  // settled layout — decided once, not discovered as a jump partway through.
+  const measureFinalHeight = useCallback((content: HTMLElement) => {
+    const elements = [content, ...content.querySelectorAll<HTMLElement>("*")]
+    const seeked: [Animation, CSSNumberish | null][] = []
+    for (const el of elements) {
+      for (const anim of el.getAnimations()) {
+        const timing = anim.effect?.getTiming()
+        if (!timing) continue
+        const iterations = timing.iterations
+        // Infinite/looping animations (pulses, loading dots) don't represent
+        // a one-time size reveal — leave them alone.
+        if (iterations === undefined || !Number.isFinite(iterations)) continue
+        const duration = typeof timing.duration === "number" ? timing.duration : 0
+        const delay = typeof timing.delay === "number" ? timing.delay : 0
+        seeked.push([anim, anim.currentTime])
+        anim.currentTime = delay + duration * iterations
+      }
+    }
+
+    const contentRect = content.getBoundingClientRect()
+    let maxBottom = contentRect.top
+    for (let i = 1; i < elements.length; i++) {
+      const el = elements[i]
+      // A walkthrough cursor's fade-out finishes well before its longer
+      // glide-to-position animation does, so at the true final frame it
+      // sits, invisibly, wherever that glide ends up — which can be well
+      // outside the panel's visible layout. An element with no effective
+      // opacity at its final frame doesn't constrain the panel's size.
+      // (checkVisibility, not getComputedStyle: opacity is a compositing
+      // effect, so a faded-out div's child SVG still reports its own
+      // computed opacity as 1 — checkVisibility is what accounts for the
+      // ancestor chain.)
+      if (!el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })) continue
+      const bottom = el.getBoundingClientRect().bottom
+      if (bottom > maxBottom) maxBottom = bottom
+    }
+
+    for (const [anim, time] of seeked) anim.currentTime = time
+
+    return maxBottom - contentRect.top
+  }, [])
+
+  const applyFitScale = useCallback(() => {
+    const stage = stageRef.current
+    const content = sceneContainerRef.current
+    if (!stage || !content) return
+
+    const stageRect = stage.getBoundingClientRect()
+    if (stageRect.height <= 0) return
+
+    const currentScale = appliedScaleRef.current || 1
+    const naturalContentHeight = measureFinalHeight(content) / currentScale
+    if (naturalContentHeight <= 0) return
+
+    const overflows = naturalContentHeight > stageRect.height + 0.5
+    const nextScale = overflows ? Math.max(0.6, stageRect.height / naturalContentHeight) : 1
+
+    const nextHeight = overflows ? `${Math.ceil(naturalContentHeight)}px` : ""
+    if (content.style.height !== nextHeight) {
+      content.style.height = nextHeight
+      content.style.maxHeight = overflows ? "none" : ""
+      // The stage centers its child vertically. A wrapper that is taller than
+      // the stage would therefore start *above* the clip edge and lose its top
+      // (the scale-down happens from `top center`, so the pre-scale position is
+      // what gets centered). Anchor it to the stage top instead; once scaled,
+      // its visual height matches the stage exactly.
+      content.style.alignSelf = overflows ? "flex-start" : ""
+    }
+
+    if (Math.abs(nextScale - currentScale) > 0.005) {
+      appliedScaleRef.current = nextScale
+      content.style.transform = nextScale < 1 ? `scale(${nextScale})` : ""
+      content.style.transformOrigin = "top center"
+      // Scaling moves every element in the scene, including the triggers that
+      // portaled dropdown menus are positioned against. Tell them to re-measure
+      // now instead of leaving them stale until the next animation frame (which
+      // never comes while the tab is hidden).
+      window.dispatchEvent(new Event("resize"))
+    }
+  }, [measureFinalHeight])
+
+  // Reset and re-measure whenever the scene changes (fresh DOM subtree). One
+  // measurement is enough — see measureFinalHeight above — so there's no
+  // ongoing poll to keep the scale from drifting mid-scene.
+  useLayoutEffect(() => {
+    appliedScaleRef.current = 1
+    const content = sceneContainerRef.current
+    if (content) {
+      content.style.transform = ""
+      content.style.transformOrigin = "top center"
+      content.style.height = ""
+      content.style.maxHeight = ""
+      content.style.alignSelf = ""
+    }
+    applyFitScale()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sceneIndex, applyFitScale])
+
+  // Re-measure when the stage itself resizes (viewport resize, fullscreen toggle).
+  useEffect(() => {
+    const stage = stageRef.current
+    if (!stage || typeof ResizeObserver === "undefined") return
+    const observer = new ResizeObserver(() => applyFitScale())
+    observer.observe(stage)
+    return () => observer.disconnect()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sceneIndex, applyFitScale])
 
   const finish = useCallback(() => {
     onComplete?.()
@@ -334,6 +458,7 @@ export function OnboardingWalkthrough({
 
         <div key={sceneIndex} className="flex min-h-0 flex-1 flex-col px-8 pt-6">
           <div
+            ref={stageRef}
             className={cn(
               "relative flex min-h-0 flex-1 cursor-pointer items-center justify-center overflow-hidden",
               paused && "ob-is-paused",

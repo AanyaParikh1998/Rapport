@@ -50,6 +50,39 @@ function isSameSchool(a: string, b: string): boolean {
   return longer[shorter.length] === ","
 }
 
+function getNormalizedCompanies(contact: Contact): { normalized: string; label: string }[] {
+  const companies: { normalized: string; label: string }[] = []
+  const seen = new Set<string>()
+
+  for (const company of [contact.company, contact.priorCompany]) {
+    const trimmed = (company ?? "").trim()
+    const normalized = normalizeMatchField(trimmed)
+    if (!normalized || seen.has(normalized)) continue
+    seen.add(normalized)
+    companies.push({ normalized, label: trimmed })
+  }
+
+  return companies
+}
+
+// Checks current AND prior company on both sides, so a shared prior
+// employer counts as a connection point the same way shared universities
+// do (which already check both undergrad and graduate schools).
+export function getSharedCompanyLabels(a: Contact, b: Contact): string[] {
+  const aCompanies = getNormalizedCompanies(a)
+  const bCompanies = getNormalizedCompanies(b)
+  const shared: string[] = []
+
+  for (const aCompany of aCompanies) {
+    const hasMatch = bCompanies.some((bCompany) => bCompany.normalized === aCompany.normalized)
+    if (hasMatch) {
+      shared.push(aCompany.label)
+    }
+  }
+
+  return shared
+}
+
 export function getSharedSchoolLabels(a: Contact, b: Contact): string[] {
   const aSchools = getNormalizedSchools(a)
   const bSchools = getNormalizedSchools(b)
@@ -114,17 +147,16 @@ export function findSharedConnections(
   contacts: Contact[],
 ): SharedConnectionMatch[] {
   const matches: SharedConnectionMatch[] = []
-  const companyNorm = normalizeMatchField(contact.company)
 
   for (const other of contacts) {
     if (other.id === contact.id) continue
 
-    if (companyNorm && normalizeMatchField(other.company) === companyNorm) {
+    for (const companyLabel of getSharedCompanyLabels(contact, other)) {
       matches.push({
         contactId: other.id,
         contactName: other.name,
         type: "company",
-        label: contact.company.trim(),
+        label: companyLabel,
       })
     }
 

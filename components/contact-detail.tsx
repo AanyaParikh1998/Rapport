@@ -400,6 +400,11 @@ export function ContactDetail({
             <h2 className="mt-3 text-[15px] font-semibold text-foreground">{contact.name}</h2>
             <p className="mt-1 text-[12px] text-muted-foreground">{contact.role}</p>
             <p className="text-[12px] text-muted-foreground">{contact.company}</p>
+            {contact.priorCompany || contact.priorRole ? (
+              <p className="text-[11px] text-muted-foreground/80">
+                Previously: {[contact.priorRole, contact.priorCompany].filter(Boolean).join(" at ")}
+              </p>
+            ) : null}
             {city ? (
               <p className="mt-1 text-[12px] text-muted-foreground">{city}</p>
             ) : null}
